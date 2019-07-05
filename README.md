@@ -14,7 +14,7 @@ If not using Firebase Hosting, there's no need to `npm install firebase` or `npm
 
 ## Requirements
 
-You must have a `.env` file at the root of your Vue CLI 3 repo containing the following key/value pairs (template available in this repo):
+You must have a `.env` file at the root of your Vue CLI 3 repo containing the following key/value pairs ([template available in this repo](https://github.com/Inventsable/leylo/blob/master/.env)):
 
 ```env
 VUE_APP_FIREBASE_APIKEY=...
