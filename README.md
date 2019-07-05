@@ -1,12 +1,14 @@
-# leylo (WIP)
+# leylo [![npm version](https://badge.fury.io/js/leylo.svg)](https://badge.fury.io/js/leylo) [![Known Vulnerabilities](https://snyk.io/test/github/Inventsable/leylo/badge.svg)](https://snyk.io/test/github/Inventsable/leylo)
 
-Asynchronous utility functions for Firestore within Vue CLI 3.
+Asynchronous utility functions for [Firestore](https://firebase.google.com/docs/firestore/quickstart) within [Vue CLI 3](https://cli.vuejs.org/).
 
 ## Installation
 
 ```bash
 npm install leylo
 ```
+
+If not using Firebase Hosting, there's no need to `npm install firebase` or `npm install firebase-tools`. Just plug in the credentials within your `.env` and you're good to go!
 
 ---
 
@@ -26,7 +28,7 @@ VUE_APP_ID=...
 
 ![](./assets/anno.png)
 
-No quotation marks needed
+No quotation marks needed in `.env` the above
 
 ---
 
