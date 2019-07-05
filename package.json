@@ -1,6 +1,6 @@
 {
   "name": "leylo",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Utility functions for Firestore within Vue CLI 3",
   "main": "index.js",
   "dependencies": {
