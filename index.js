@@ -20,18 +20,41 @@ async function collectionExists(collection) {
     });
 }
 
-async function getDocById(collection, id) {
+async function getDocById(collection, id, getData = true) {
   return await db
     .collection(collection)
     .where(docId, "==", id)
     .get()
     .then(snapshot => {
       if (!snapshot.docs.length) return false;
-      return snapshot.docs[0].data();
+      if (getData) return snapshot.docs[0].data();
+      else return snapshot.docs[0];
     });
 }
 
-async function getAllDocsByField(collection, field, value) {
+async function getDocRefByField(collection, field, value) {
+  return await db
+    .collection(collection)
+    .where(field, "==", value)
+    .get()
+    .then(snapshot => {
+      if (!snapshot.docs.length) return false;
+      return snapshot.docs[0].ref.path;
+    });
+}
+
+async function getDocIdByField(collection, field, value) {
+  return await db
+    .collection(collection)
+    .where(field, "==", value)
+    .get()
+    .then(snapshot => {
+      if (!snapshot.docs.length) return false;
+      return snapshot.docs[0].id;
+    });
+}
+
+async function getAllDocsByField(collection, field, value, getData = true) {
   return await db
     .collection(collection)
     .where(field, "==", value)
@@ -40,34 +63,49 @@ async function getAllDocsByField(collection, field, value) {
       if (!snapshot.docs.length) return false;
       return Promise.all(
         snapshot.docs.map(doc => {
-          return Promise.resolve(doc.data());
+          if (getData) return Promise.resolve(doc.data());
+          else return Promise.resolve(doc);
         })
       );
     });
 }
 
-async function getDocByField(collection, field, value) {
+async function getDocByField(collection, field, value, getData = true) {
   return await db
     .collection(collection)
     .where(field, "==", value)
     .get()
     .then(snapshot => {
       if (!snapshot.docs.length) return false;
-      return snapshot.docs[0].data();
+      if (getData) return snapshot.docs[0].data();
+      else return snapshot.docs[0];
     });
 }
 
-async function queryDocByField(collection, field, query, value) {
+async function queryDocByField(
+  collection,
+  field,
+  query,
+  value,
+  getData = true
+) {
   return await db
     .collection(collection)
     .where(field, query, value)
     .get()
     .then(snapshot => {
       if (!snapshot.docs.length) return false;
-      return snapshot.docs[0].data();
+      if (getData) return snapshot.docs[0].data();
+      else return snapshot.docs[0];
     });
 }
-async function queryAllDocsByField(collection, field, query, value) {
+async function queryAllDocsByField(
+  collection,
+  field,
+  query,
+  value,
+  getData = true
+) {
   return await db
     .collection(collection)
     .where(field, query, value)
@@ -76,13 +114,14 @@ async function queryAllDocsByField(collection, field, query, value) {
       if (!snapshot.docs.length) return false;
       return Promise.all(
         snapshot.docs.map(doc => {
-          return Promise.resolve(doc.data());
+          if (getData) return Promise.resolve(doc.data());
+          else return Promise.resolve(doc);
         })
       );
     });
 }
 
-async function getCollection(collection) {
+async function getCollection(collection, getData = true) {
   return await db
     .collection(collection)
     .get()
@@ -90,7 +129,8 @@ async function getCollection(collection) {
       if (!snapshot.docs.length) return false;
       return Promise.all(
         snapshot.docs.map(doc => {
-          return Promise.resolve(doc.data());
+          if (getData) return Promise.resolve(doc.data());
+          else return Promise.resolve(doc);
         })
       );
     });
@@ -101,6 +141,8 @@ const leylo = {
   docExists: docExists,
   getDocById: getDocById,
   getDocByField: getDocByField,
+  getDocRefByField: getDocRefByField,
+  getDocIdByField: getDocIdByField,
   getAllDocsByField: getAllDocsByField,
   queryDocByField: queryDocByField,
   queryAllDocsByField: queryAllDocsByField,
