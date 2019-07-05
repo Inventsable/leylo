@@ -1,4 +1,4 @@
-# leylo
+# leylo (WIP)
 
 Asynchronous utility functions for Firestore within Vue CLI 3.
 
@@ -7,8 +7,6 @@ Asynchronous utility functions for Firestore within Vue CLI 3.
 ```bash
 npm install leylo
 ```
-
-<br>
 
 ---
 
@@ -26,7 +24,9 @@ VUE_APP_MESSAGINGSENDERID=...
 VUE_APP_ID=...
 ```
 
-<br>
+![](./assets/anno.png)
+
+No quotation marks needed
 
 ---
 
@@ -49,8 +49,6 @@ export default {
   }
 };
 ```
-
-<br>
 
 ---
 
@@ -131,7 +129,7 @@ Returns `Object` with specified `id` in Firestore or `False` if not found
 - `id` **[String]** - Name/ID of document within collection
 
 ```js
-let user = await leylo.getDocById("users", "inventsable");
+let user = await leylo.getDocById("users", "Inventsable");
 console.log(user); //  Returns { name: 'Tom Scharstein', ... }
 ```
 
@@ -166,6 +164,7 @@ let usersInArizona = await leylo.getAllDocsByField(
   "location",
   "Arizona"
 );
+// Returns [ ... ]
 usersInArizona.forEach(user => {
   console.log(user); //  Returns { name: 'Tom Scharstein', ... }
 });
@@ -179,18 +178,18 @@ Returns first `Object` found with specified `field` `(query)` `value` in Firesto
 
 - `collection` **[String]** - Name of collection
 - `field` **[String]** - Name of key/field of target document
-- `query` **[String]** -
+- `query` **[String]** - One of `==`, `>=`, `<=`, `>`, `<`, or valid Firebase query string
 - `value` **[String]** - Value of key/field of target document
 
 ```js
-let usersInArizona = await leylo.queryDocByField(
+let placeTooHotToLiveIn = await leylo.queryDocByField(
   "states",
   "temperature",
   ">="
-  "Arizona"
+  "110"
 );
-usersInArizona.forEach(user => {
-  console.log(user); //  Returns { name: 'Tom Scharstein', ... }
+placeTooHotToLiveIn.forEach(place => {
+  console.log(place);  //  Returns { name: 'Arizona', ... }
 });
 ```
 
@@ -202,6 +201,7 @@ Returns `Array` of every `Object` with specified `field` `(query)` `value` in Fi
 
 - `collection` **[String]** - Name of collection
 - `field` **[String]** - Name of key/field of target document
+- `query` **[String]** - One of `==`, `>=`, `<=`, `>`, `<`, or valid Firebase query string
 - `value` **[String]** - Value of key/field of target document
 
 ```js
@@ -211,6 +211,7 @@ let usersInArizona = await leylo.queryAllDocsByField(
   "==",
   "Arizona"
 );
+// Returns [ ... ]
 usersInArizona.forEach(user => {
   console.log(user); //  Returns { name: 'Tom Scharstein', ... }
 });
