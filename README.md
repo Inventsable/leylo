@@ -93,6 +93,14 @@ query
 
 ## Retreiving Data
 
+- [docExists()](#docexistscollection-id)
+- [collectionExists()](#collectionexistscollection)
+- [getDocById()](#getdocbyidcollection-id)
+- [getDocByField()](#getdocbyfieldcollection-field-value)
+- [getAllDocsByField()](#getalldocsbyfieldcollection-field-value)
+- [queryDocByField()](#querydocbyfieldcollection-field-query-value)
+- [queryAllDocsByField()](#queryalldocsbyfieldcollection-field-query-value)
+
 ### `.docExists(collection, id)`
 
 Returns `Boolean` of whether document with specified `id` is found in Firestore
@@ -175,6 +183,40 @@ let usersInArizona = await leylo.getAllDocsByField(
 usersInArizona.forEach(user => {
   console.log(user); //  Returns { name: 'Tom Scharstein', ... }
 });
+```
+
+<br>
+
+### `.getDocIdByField(collection, field, value)`
+
+> Same as using `leylo.getDocByField("users", "name", "Tom Scharstein", false).id`
+
+Returns `String` of specified `field` = `value` document's `id` in Firestore or `False` if not found
+
+- `collection` **[String]** - Name of collection
+- `field` **[String]** - Name of key/field of target document
+- `value` **[String]** - Value of key/field of target document
+
+```js
+let user = await leylo.getDocIdByField("users", "name", "Tom Scharstein");
+console.log(user); //  Returns 'Inventsable'
+```
+
+<br>
+
+### `.getDocRefByField(collection, field, value)`
+
+> Same as using `leylo.getDocByField("users", "name", "Tom Scharstein", false).ref.path`
+
+Returns `String` with specified `field` = `value` document's path in Firestore or `False` if not found
+
+- `collection` **[String]** - Name of collection
+- `field` **[String]** - Name of key/field of target document
+- `value` **[String]** - Value of key/field of target document
+
+```js
+let user = await leylo.getDocRefByField("users", "name", "Tom Scharstein");
+console.log(user); //  Returns 'users/Inventsable'
 ```
 
 <br>
