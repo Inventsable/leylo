@@ -140,13 +140,14 @@ console.log(user); //  Returns { name: 'Tom Scharstein', ... }
 
 <br>
 
-### `.getDocByField(collection, field, value)`
+### `.getDocByField(collection, field, value[, getData?])`
 
 Returns `Object` with specified `field` = `value` in Firestore or `False` if not found
 
 - `collection` **[String]** - Name of collection
 - `field` **[String]** - Name of key/field of target document
 - `value` **[String]** - Value of key/field of target document
+- `getData` **[Boolean]** (_Default: true_) - If `true` returns `doc.data()` else returns `documentSnapshot`
 
 ```js
 let user = await leylo.getDocByField("users", "name", "Tom Scharstein");
@@ -155,13 +156,14 @@ console.log(user); //  Returns { name: 'Tom Scharstein', ... }
 
 <br>
 
-### `.getAllDocsByField(collection, field, value)`
+### `.getAllDocsByField(collection, field, value[, getData?])`
 
 Returns `Array` of every `Object` with specified `field` = `value` in Firestore or `False` if none found
 
 - `collection` **[String]** - Name of collection
 - `field` **[String]** - Name of key/field of target document
 - `value` **[String]** - Value of key/field of target document
+- `getData` **[Boolean]** (_Default: true_) - If `true` returns `doc.data()` else returns `documentSnapshot`
 
 ```js
 let usersInArizona = await leylo.getAllDocsByField(
@@ -177,7 +179,7 @@ usersInArizona.forEach(user => {
 
 <br>
 
-### `.queryDocByField(collection, field, query, value)`
+### `.queryDocByField(collection, field, query, value[, getData?])`
 
 Returns first `Object` found with specified `field` `(query)` `value` in Firestore or `False` if not found
 
@@ -185,22 +187,24 @@ Returns first `Object` found with specified `field` `(query)` `value` in Firesto
 - `field` **[String]** - Name of key/field of target document
 - `query` **[String]** - One of `==`, `>=`, `<=`, `>`, `<`, or valid Firebase query string
 - `value` **[String]** - Value of key/field of target document
+- `getData` **[Boolean]** (_Default: true_) - If `true` returns `doc.data()` else returns `documentSnapshot`
 
 ```js
 let placeTooHotToLiveIn = await leylo.queryDocByField(
   "states",
   "temperature",
   ">="
-  "110"
+  "110",
+  false
 );
 placeTooHotToLiveIn.forEach(place => {
-  console.log(place);  //  Returns { name: 'Arizona', ... }
+  console.log(place);  //  Returns DocumentSnapshot{ ... }
 });
 ```
 
 <br>
 
-### `.queryAllDocsByField(collection, field, query, value)`
+### `.queryAllDocsByField(collection, field, query, value[, getData?])`
 
 Returns `Array` of every `Object` with specified `field` `(query)` `value` in Firestore or `False` if none found
 
@@ -208,6 +212,7 @@ Returns `Array` of every `Object` with specified `field` `(query)` `value` in Fi
 - `field` **[String]** - Name of key/field of target document
 - `query` **[String]** - One of `==`, `>=`, `<=`, `>`, `<`, or valid Firebase query string
 - `value` **[String]** - Value of key/field of target document
+- `getData` **[Boolean]** (_Default: true_) - If `true` returns `doc.data()` else returns `documentSnapshot`
 
 ```js
 let usersInArizona = await leylo.queryAllDocsByField(
