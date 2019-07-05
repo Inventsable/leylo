@@ -68,8 +68,7 @@ All methods are accessible as properties of `leylo`, as in `leylo.docExists(...)
 Returns `Object` of interior `Firestore` used for all queries.
 
 ```js
-let db = leylo.db;
-console.log(db);
+console.log(leylo.db);
 // Returns Firestore {_queue: AsyncQueue, INTERNAL: {…}, _config: FirestoreConfig, _databaseId: DatabaseId, _dataConverter: UserDataConverter, …}
 ```
 
@@ -102,7 +101,7 @@ query
 - [leylo.getDocRefByField()](#getdocrefbyfieldcollection-field-value)
 - [leylo.queryDocByField()](#querydocbyfieldcollection-field-query-value-getdata)
 - [leylo.queryAllDocsByField()](#queryalldocsbyfieldcollection-field-query-value-getdata)
-- [leylo.streamDocChanges()](#queryalldocsbyfieldcollection-field-query-value-getdata)
+- [leylo.streamDocChanges()](#streamdocchangescollection-id-callback-getdata)
 
 <br>
 
