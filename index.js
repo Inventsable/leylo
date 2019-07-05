@@ -1,10 +1,9 @@
 import db from "./init.js";
-const docId = db.app.firebase_.firestore.FieldPath.documentId();
 
 async function docExists(collection, id) {
   return await db
     .collection(collection)
-    .where(docId, "==", id)
+    .where(db.app.firebase_.firestore.FieldPath.documentId(), "==", id)
     .get()
     .then(snapshot => {
       return snapshot.docs.length > 0;
@@ -23,7 +22,7 @@ async function collectionExists(collection) {
 async function getDocById(collection, id, getData = true) {
   return await db
     .collection(collection)
-    .where(docId, "==", id)
+    .where(db.app.firebase_.firestore.FieldPath.documentId(), "==", id)
     .get()
     .then(snapshot => {
       if (!snapshot.docs.length) return false;
@@ -121,6 +120,30 @@ async function queryAllDocsByField(
     });
 }
 
+async function streamDocChanges(
+  collection,
+  id,
+  callback = null,
+  getData = true
+) {
+  return await db
+    .collection(collection)
+    .where(db.app.firebase_.firestore.FieldPath.documentId(), "==", id)
+    .onSnapshot(querySnapshot => {
+      return Promise.all(
+        querySnapshot.docChanges().map(change => {
+          if (!callback) {
+            if (getData) return Promise.resolve(change.doc.data());
+            else return Promise.resolve(change.doc);
+          } else {
+            if (getData) return Promise.resolve(callback(change.doc.data()));
+            else return Promise.resolve(callback(change.doc));
+          }
+        })
+      );
+    });
+}
+
 async function getCollection(collection, getData = true) {
   return await db
     .collection(collection)
@@ -144,6 +167,7 @@ const leylo = {
   getDocRefByField: getDocRefByField,
   getDocIdByField: getDocIdByField,
   getAllDocsByField: getAllDocsByField,
+  streamDocChanges: streamDocChanges,
   queryDocByField: queryDocByField,
   queryAllDocsByField: queryAllDocsByField,
   collectionExists: collectionExists,

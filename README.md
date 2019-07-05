@@ -95,13 +95,14 @@ query
 
 - [leylo.docExists()](#docexistscollection-id)
 - [leylo.collectionExists()](#collectionexistscollection)
-- [leylo.getDocById()](#getdocbyidcollection-id)
-- [leylo.getDocByField()](#getdocbyfieldcollection-field-value)
-- [leylo.getAllDocsByField()](#getalldocsbyfieldcollection-field-value)
+- [leylo.getDocById()](#getdocbyidcollection-id-getdata)
+- [leylo.getDocByField()](#getdocbyfieldcollection-field-value-getdata)
+- [leylo.getAllDocsByField()](#getalldocsbyfieldcollection-field-value-getdata)
 - [leylo.getDocIdByField()](#getdocidbyfieldcollection-field-value)
 - [leylo.getDocRefByField()](#getdocrefbyfieldcollection-field-value)
-- [leylo.queryDocByField()](#querydocbyfieldcollection-field-query-value)
-- [leylo.queryAllDocsByField()](#queryalldocsbyfieldcollection-field-query-value)
+- [leylo.queryDocByField()](#querydocbyfieldcollection-field-query-value-getdata)
+- [leylo.queryAllDocsByField()](#queryalldocsbyfieldcollection-field-query-value-getdata)
+- [leylo.streamDocChanges()](#queryalldocsbyfieldcollection-field-query-value-getdata)
 
 <br>
 
@@ -272,6 +273,46 @@ let usersInArizona = await leylo.queryAllDocsByField(
 usersInArizona.forEach(user => {
   console.log(user); //  Returns { name: 'Tom Scharstein', ... }
 });
+```
+
+<br>
+
+### `.streamDocChanges(collection, id, callback[, getData?])`
+
+Returns result of passing document `Object` as parameter to `callback` every time the document is modified
+
+- `collection` **[String]** - Name of collection
+- `id` **[String]** - Name/ID of document within collection
+- `callback` **[Function]** - Function to execute on every change to document
+- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+
+```js
+
+// Can do this during created(), mounted() or some init function
+let messages = await leylo.streamDocChanges(
+  "messages",
+  "chatroomA",
+  newdata => {
+    // Executes every time a field is added or modified to this document
+    console.log("Document has changed to:");
+    console.log(newdata);
+  }
+);
+
+let userList = await leylo.streamDocChanges(
+  "users",
+  "chatroomA",
+  this.addUser,
+  false
+);
+
+// Passing the data from above stream into one of our component's methods:
+methods: {
+  addUser(doc) {
+    console.log(doc.data())
+  }
+}
+
 ```
 
 <br>
