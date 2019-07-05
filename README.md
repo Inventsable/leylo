@@ -32,22 +32,25 @@ No quotation marks needed
 
 ## Usage
 
-```js
-import leylo from "leylo";
+```html
+// Within a .vue file
+<script>
+  import leylo from "leylo";
 
-export default {
-  name: "yourComponent",
-  // If using async/await, must define mounted/created/function as async
-  async mounted() {
-    let validation = await leylo.docExists("users", "Inventsable");
-    console.log(validation); //  Returns true
+  export default {
+    name: "yourComponent",
+    // If using async/await, must define mounted/created/function as async
+    async mounted() {
+      let validation = await leylo.docExists("users", "Inventsable");
+      console.log(validation); //  Returns true
 
-    // All functions are thenable if not using async
-    leylo.docExists("users", "Inventsable").then(response => {
-      console.log(response); //  Returns true
-    });
-  }
-};
+      // All functions are thenable if not using async
+      leylo.docExists("users", "Inventsable").then(response => {
+        console.log(response); //  Returns true
+      });
+    }
+  };
+</script>
 ```
 
 ---
