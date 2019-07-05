@@ -33,8 +33,8 @@ No quotation marks needed
 ## Usage
 
 ```html
-// Within a .vue file
 <script>
+  // Within a .vue file
   import leylo from "leylo";
 
   export default {
