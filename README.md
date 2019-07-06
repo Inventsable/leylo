@@ -2,6 +2,10 @@
 
 Asynchronous utility functions for [Firestore](https://firebase.google.com/docs/firestore/quickstart) within [Vue CLI 3](https://cli.vuejs.org/).
 
+| [Installation](#Installation) | [Requirements](#Requirements) | [Usage](#Usage) | [API](#API) |
+| ----------------------------- | :---------------------------: | :-------------: | :---------: |
+
+
 ## Installation
 
 ```bash
@@ -70,9 +74,9 @@ All methods are accessible as properties of `leylo`, as in `leylo.docExists(...)
 
 > [◤](#api)&nbsp;&nbsp; Click these arrows to return to the top of the API
 
-> [▲](#api)&nbsp;&nbsp; Click these arrows to return to the top of each segment
+> [▲](#-global)&nbsp;&nbsp; Click these arrows to return to the top of each segment
 
-### [▲](#global)&nbsp;&nbsp; `.db`
+### [▲](#-global)&nbsp;&nbsp; `.db`
 
 Returns `Object` of interior `Firestore` used for all queries.
 
