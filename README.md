@@ -74,7 +74,7 @@ All methods are accessible as properties of `leylo`, as in `leylo.docExists(...)
 
 > [◤](#-api)&nbsp;&nbsp; Click these arrows to return to the top of the API
 
-### &nbsp;&nbsp;[▲](#--global)&nbsp;&nbsp; `.db`
+### &nbsp;&nbsp; `.db`
 
 Returns `Object` of interior `Firestore` used for all queries.
 
@@ -466,97 +466,199 @@ let streamAllUserEvents = await leylo.streamCollection(
 
 ## [◤](#api)&nbsp;&nbsp; 📘 Adding Data
 
-- [leylo.setDoc()](#-)
-- [leylo.setAllDocs()](#-)
-- [leylo.setDocByPath()](#-)
-- [leylo.setAllDocsByPath()](#-)
-- [leylo.setFieldByPath()](#-)
-- [leylo.setFieldByDocId()](#-)
 - [leylo.addDoc()](#-)
 - [leylo.addAllDocs()](#-)
+- [leylo.setDocByPath()](#-)
+- [leylo.setAllDocsByPath()](#-)
+- [leylo.setDocById()](#-)
+- [leylo.setAllDocsById()](#-)
+- [leylo.setFieldByPath()](#-)
+- [leylo.setFieldById()](#-)
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.setDoc(collection, id, data[, overwrite?])`
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.addDoc(collection, data)`
+
+Returns `DocumentReference` result of writing new document with auto-generated id to `collection`
+
+- `collection` **[String]** - Name of collection
+- `data` **[Object]** - Contents of document to write
+
+```js
+let user = await leylo.addDoc("users", {
+  name: "Random",
+  location: "Random"
+});
+
+console.log(user); //  Returns DocumentSnapshot{ ... }
+console.log(user.id); //  Returns 'cmeJ6JeoTCIfvMvgE2ru', auto-generated id
+console.log(user.ref.path); //  Returns 'users/cmeJ6JeoTCIfvMvgE2ru'
+console.log(user.data()); //  Returns { name: 'Random', location: 'Random' }
+```
+
+<br>
+
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.addAllDocs(collection, ...docs)`
+
+<!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
+
+- `collection` **[String]** - Name of collection
+- `docs` **[Array]** - Array containing `Object`s to be written as documents (without ids)
+
+```js
+let newUsers = await leylo.addAllDocs(
+  "users",
+  ...[{ name: "SomeGuy" }, { name: "SomeGirl" }]
+);
+console.log(docsCreatedWithGeneratedIds); // Returns [DocumentReference, DocumentReference]
+```
+
+<br>
+
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.setDocByPath(path, data[, overwrite?])`
+
+Returns `Boolean` of whether the document was successfully written to Firestore collection
+
+- `path` **[String]** - Path in the form collection/document
+- `data` **[Object]** - Contents of document to write or append
+- `overwrite` **[Boolean]** (_Default: false_) - If `false`, merge new `data` with pre-existing document or overwrite if it already exists, but if `true` replace document entirely with new `data`
+
+```js
+// If user 'Inventsable' already has content but no location, merge it as a new field:
+let setLocation = await leylo.setDocByPath("users/Inventsable", {
+  location: "Colorado"
+});
+console.log(setLocation); //  Returns true
+
+// If location already existed, rewrite it's contents to the new value:
+let rewriteLocation = await leylo.setDocByPath("users/Inventsable", {
+  location: "Washington"
+});
+console.log(rewriteLocation); //  Returns true
+
+// If overwrite is true, replace document at path entirely:
+let rewriteUserData = await leylo.setDocByPath(
+  "users/Inventsable",
+  {
+    name: "Tom Scharstein",
+    location: "Tempe",
+    status: "Working"
+  },
+  true
+);
+
+console.log(rewriteUserData); //  Returns true
+```
+
+<br>
+
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.setAllDocsByPath(overwrite, ...docs)`
+
+Returns `Array` of `Boolean`s the length of `docs` array for whether document was successfully written to Firestore
+
+- `data` **[Object]** - Contents of document to write or append
+- `overwrite` **[Boolean]** (_Default: false_) - If `false`, merge new `data` with pre-existing document or overwrite if it already exists, but if `true` replace document entirely with new `data`
+
+```js
+// Each data is an array in the form [ 'path', contents]
+let users = [
+  ["users/Inventsable", { name: "Tom" }],
+  ["users/somePerson", { name: "John" }],
+  ["users/someOtherPerson", { name: "Jane" }]
+];
+
+let writeUsers = await leylo.setAllDocsByPath(true, ...users);
+console.log(writeUsers); // Returns [true, true, true]
+
+let newLocations = [
+  ["users/Inventsable", { location: "Arizona" }],
+  ["users/somePerson", { location: "Arizona" }],
+  ["users/someOtherPerson", { location: "Arizona" }]
+];
+
+let mergeNewLocations = await leylo.setAllDocsByPath(false, ...newLocations);
+console.log(writeUsers); // Returns [true, true, true]
+```
+
+<br>
+
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.setDocById(collection, id, data[, overwrite?])`
 
 Returns `Boolean` of whether the document was successfully written to Firestore collection
 
 - `collection` **[String]** - Name of collection
 - `id` **[String]** - Name/ID of document within collection
-- `data` **[Object]** - Contents of document
-- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+- `data` **[Object]** - Contents of document to write
+- `overwrite` **[Boolean]** (_Default: false_) - If `false`, merge new `data` with pre-existing document, but if `true` replace document entirely with new `data`
 
 ```js
+let setAnotherLocation = await leylo.setDocById(
+  "users",
+  "Inventsable",
+  { location: "Colorado" },
+  false
+);
+console.log(setAnotherLocation);
 ```
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.`
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.setAllDocsById(collection, overwrite, ...docs)`
 
-<!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
+Returns `Array` of `Boolean`s the length of `docs` array for whether document was successfully written to Firestore
 
 - `collection` **[String]** - Name of collection
-- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
-- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
-- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+- `overwrite` **[Boolean]** (_Default: false_) - If `false`, merge new `data` with pre-existing document, but if `true` replace document entirely with new `data`
+- `docs` **[Array]** - Contents of document to write as `[ 'id', contents ]`
 
 ```js
+// Each document is an array in the form [ 'id', contents]
+let users = [
+  ["Inventsable", { name: "Tom" }],
+  ["SomeNameHere", { name: "John" }],
+  ["ScreenName", { name: "Jane" }]
+];
+
+let writeUsers = await leylo.setAllDocsById("users", true, ...users);
+console.log(writeUsers); // Returns [true, true, true]
 ```
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.`
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.setFieldByPath(path, value)`
 
-<!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
+Returns `Boolean` of whether the field was successfully written to `path`
 
-- `collection` **[String]** - Name of collection
-- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
-- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
-- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+- `path` **[String]** - Path in the form collection/document/field
+- `value` **[Any]** - New value to write to specified `path`
 
 ```js
+let updateUserLocation = await leylo.setFieldByPath(
+  "users/Inventsable/location",
+  "Alaska"
+);
+console.log(updateUserLocation); //  Returns true
 ```
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.`
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.setFieldById(collection, id, field, value)`
 
-<!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
-
-- `collection` **[String]** - Name of collection
-- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
-- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
-- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
-
-```js
-```
-
-<br>
-
-### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.`
-
-<!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
+Returns `Boolean` of whether the field was successfully written to `path`
 
 - `collection` **[String]** - Name of collection
-- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
-- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
-- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+- `id` **[String]** - Name/ID of document within collection
+- `field` **[String]** - Name of key within document
+- `value` **[Any]** - New value to write to specified `path`
 
 ```js
-```
-
-<br>
-
-### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.`
-
-<!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
-
-- `collection` **[String]** - Name of collection
-- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
-- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
-- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
-
-```js
+let setNewLocation = await leylo.setFieldByDocId(
+  "users",
+  "Inventsable",
+  "location",
+  "Colorado"
+);
+console.log(setNewLocation);
 ```
 
 <br>
