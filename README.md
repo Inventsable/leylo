@@ -1,12 +1,12 @@
 # leylo [![npm version](https://badge.fury.io/js/leylo.svg)](https://badge.fury.io/js/leylo) [![Known Vulnerabilities](https://snyk.io/test/github/Inventsable/leylo/badge.svg)](https://snyk.io/test/github/Inventsable/leylo)
 
-| [📕 Installation](#Installation) | [📙 Requirements](#Requirements) | [📗 Usage](#Usage) | [📘 API](#API) |
+| [🔨 Installation](#Installation) | [🔑 Requirements](#Requirements) | [🏆 Usage](#Usage) | [📚 API](#API) |
 | -------------------------------- | :------------------------------: | :----------------: | :------------: |
 
 
 Asynchronous utility functions for [Firestore](https://firebase.google.com/docs/firestore/quickstart) within [Vue CLI 3](https://cli.vuejs.org/).
 
-## 📕 Installation
+## 🔨 Installation
 
 ```bash
 npm install leylo
@@ -16,7 +16,7 @@ If not using Firebase Hosting, there's no need to `npm install firebase` or `npm
 
 ---
 
-## 📙 Requirements
+## 🔑 Requirements
 
 You must have a `.env` file at the root of your Vue CLI 3 repo containing the following key/value pairs ([template available in this repo](https://github.com/Inventsable/leylo/blob/master/.env)):
 
@@ -36,7 +36,7 @@ No quotation marks needed in `.env` the above
 
 ---
 
-## 📗 Usage
+## 🏆 Usage
 
 ```html
 <script>
@@ -61,16 +61,16 @@ No quotation marks needed in `.env` the above
 
 ---
 
-## 📘 API
+## 📚 API
 
 All methods are accessible as properties of `leylo`, as in `leylo.docExists(...)`.
 
-<span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;- [Global](#-global)<span><br>
-<span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;- [Retrieving Data](#-retreiving-data)<span><br>
-<span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;- [Adding Data](#-adding-data)<span><br>
-<span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;- [Deleting Data](#-deleting-data)<span><br>
+<span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;📗 [Global](#-global)<span><br>
+<span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;📙 [Retrieving Data](#-retreiving-data)<span><br>
+<span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;📘 [Adding Data](#-adding-data)<span><br>
+<span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;📕 [Deleting Data](#-deleting-data)<span><br>
 
-## [◤](#api)&nbsp;&nbsp; Global
+## [◤](#api)&nbsp;&nbsp; 📗 Global
 
 > [◤](#api)&nbsp;&nbsp; Click these arrows to return to the top of the API
 
@@ -105,7 +105,7 @@ query
 
 <!-- <span style="float: right">[Back to API 2](#api)</span> -->
 
-## [◤](#api)&nbsp;&nbsp; Retreiving Data
+## [◤](#api)&nbsp;&nbsp; 📙 Retreiving Data
 
 - [leylo.docExists()](#-docexistscollection-id)
 - [leylo.collectionExists()](#-collectionexistscollection)
@@ -425,13 +425,13 @@ let editStream2 = await leylo.streamCollection(
 
 ---
 
-## [◤](#api)&nbsp;&nbsp; Adding Data
+## [◤](#api)&nbsp;&nbsp; 📘 Adding Data
 
 **Todo**
 
 ---
 
-## [◤](#api)&nbsp;&nbsp; Deleting Data
+## [◤](#api)&nbsp;&nbsp; 📕 Deleting Data
 
 **Todo**
 
