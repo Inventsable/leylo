@@ -1,12 +1,12 @@
 # leylo [![npm version](https://badge.fury.io/js/leylo.svg)](https://badge.fury.io/js/leylo) [![Known Vulnerabilities](https://snyk.io/test/github/Inventsable/leylo/badge.svg)](https://snyk.io/test/github/Inventsable/leylo)
 
-| [🔨 Installation](#-installation) | [🔑 Requirements](#-requirements) | [🏆 Usage](#-usage) | [📚 API](#-api) |
-| --------------------------------- | :-------------------------------: | :-----------------: | :-------------: |
+| [Installation](#installation) | [Requirements](#requirements) | [Usage](#usage) | [📚 API](#-api) |
+| ----------------------------- | :---------------------------: | :-------------: | :-------------: |
 
 
 Asynchronous utility functions for [Firestore](https://firebase.google.com/docs/firestore/quickstart) within [Vue CLI 3](https://cli.vuejs.org/).
 
-## 🔨 Installation
+## ▸ Installation
 
 ```bash
 npm install leylo
@@ -16,7 +16,7 @@ If not using Firebase Hosting, there's no need to `npm install firebase` or `npm
 
 ---
 
-## 🔑 Requirements
+## ▸ Requirements
 
 You must have a `.env` file at the root of your Vue CLI 3 repo containing the following key/value pairs ([template available in this repo](https://github.com/Inventsable/leylo/blob/master/.env)):
 
@@ -36,7 +36,7 @@ No quotation marks needed in `.env` the above
 
 ---
 
-## 🏆 Usage
+## ▸ Usage
 
 ```html
 <script>
@@ -73,8 +73,6 @@ All methods are accessible as properties of `leylo`, as in `leylo.docExists(...)
 ## [◤](#-api)&nbsp;&nbsp; 📗 Global
 
 > [◤](#-api)&nbsp;&nbsp; Click these arrows to return to the top of the API
-
-> [▲](#--global)&nbsp;&nbsp; Click these arrows to return to the top of each segment
 
 ### [▲](#--global)&nbsp;&nbsp; `.db`
 
@@ -117,10 +115,17 @@ query
 - [leylo.getDocIdByField()](#-getdocidbyfieldcollection-field-value)
 - [leylo.getDocRefByField()](#-getdocrefbyfieldcollection-field-value)
 - [leylo.streamDocChangesById()](#-streamdocchangesbyidcollection-id-callback-getdata)
+- [leylo.streamDocChangesByField()](#-)
+- [leylo.streamDocChangesByQuery()](#-)
+- [leylo.getCollection()](#-)
+- [leylo.streamCollection()](#-)
+- leylo.streamPath
 
 <br>
 
 ### [▲](#--retreiving-data)&nbsp;&nbsp; `.docExists(collection, id)`
+
+> [▲](#--global)&nbsp;&nbsp; Click these arrows to return to the top of each segment
 
 Returns `Boolean` of whether document with specified `id` is found in Firestore
 
@@ -378,6 +383,40 @@ let userList = await leylo.streamDocChangesById(
 );
 ```
 
+### [▲](#--retreiving-data)&nbsp;&nbsp; `.getCollection(collection[, getData?])`
+
+Returns `Object` with specified `id` in Firestore or `False` if not found
+
+- `collection` **[String]** - Name of collection
+- `getData` **[Boolean]** (_Default: true_) - If `true` returns `documentSnapshot.data()` else returns `documentSnapshot`
+
+```js
+// Simple grab all documents within a collection:
+let userList = await leylo.getCollection("userList");
+console.log(userList); // Returns [{…}, {…}, {…}, {…}, {…}]
+
+//
+let doSomethingEveryUser = leylo
+  .getCollection("userList", false)
+  .then(users => {
+    users.forEach(user => {
+      console.log(`${user.id} is at ${user.ref.path} and contains:`); // Inventsable is at userList/Inventsable and contains
+      console.log(user.data()); // Returns Object with document contents { ... }
+    });
+  });
+
+let doSomethingAsyncForList = await leylo.getCollection("userList", false);
+console.log("This prints at the top");
+Promise.all(
+  doSomethingAsyncEveryUser.map(user => {
+    console.log(`This prints in the middle: ${user.id}`); // This prints in the middle: Inventsable
+    Promise.resolve(true);
+  })
+);
+console.log(`This prints at the bottom`);
+// Now continue to next code
+```
+
 <br>
 
 ### [▲](#--retreiving-data)&nbsp;&nbsp; `.streamCollection(collection[, callback, changeType, getData?])`
@@ -390,33 +429,33 @@ Returns **every matching** result of passing document `Object` as parameter to `
 - `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
 
 ```js
-let userStream = await leylo.streamCollection("users", res => {
-  console.log("user detected:");
-  console.log(res); // Returns { name: 'Tom Scharstein', ... }
+let streamUsers = await leylo.streamCollection("users", res => {
+  console.log("User detected:");
+  console.log(res); // Returns { name: 'Inventsable', ... }
 });
 
-let messageStream = await leylo.streamCollection(
-  "messages",
-  res => {
-    console.log("New message added:");
-    console.log(res);
+let streamWelcomeNewUsers = await leylo.streamCollection(
+  "users",
+  user => {
+    console.log(`${user.id} at ${user.ref.path}: Wecome ${user.data().name}!`);
   },
   "added",
   false
 );
 
-// Pass all modified documents of collection to specified handleMessage() method:
-let editStream = await leylo.streamCollection(
-  "messages",
-  this.handleMessage,
-  "modified"
+// Passing document reference to handleChange() method whenever any doc is modified within collection:
+let streamEditsToAnyUser = await leylo.streamCollection(
+  "user",
+  this.handleChange,
+  "modified",
+  false
 );
 
 // If needing to access documentQuery with no changeType specified, assign null:
-let editStream2 = await leylo.streamCollection(
+let streamAllUserEvents = await leylo.streamCollection(
   "messages",
   this.handleMessage,
-  null,
+  null, // if null handle all events, else "modified", "added", or "removed"
   false
 );
 ```
@@ -427,12 +466,111 @@ let editStream2 = await leylo.streamCollection(
 
 ## [◤](#api)&nbsp;&nbsp; 📘 Adding Data
 
-**Todo**
+- [leylo.setDoc()](#-)
+- [leylo.setAllDocs()](#-)
+- [leylo.setDocByPath()](#-)
+- [leylo.setAllDocsByPath()](#-)
+- [leylo.setFieldByPath()](#-)
+- [leylo.setFieldByDocId()](#-)
+- [leylo.addDoc()](#-)
+- [leylo.addAllDocs()](#-)
+
+<br>
+
+### [▲](#--adding-data)&nbsp;&nbsp; `.setDoc(collection, id, data[, overwrite?])`
+
+Returns `Boolean` of whether the document was successfully written to Firestore collection
+
+- `collection` **[String]** - Name of collection
+- `id` **[String]** - Name/ID of document within collection
+- `data` **[Object]** - Contents of document
+- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+
+```js
+```
+
+<br>
+
+### [▲](#--adding-data)&nbsp;&nbsp; `.`
+
+<!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
+
+- `collection` **[String]** - Name of collection
+- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
+- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
+- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+
+```js
+```
+
+<br>
+
+### [▲](#--adding-data)&nbsp;&nbsp; `.`
+
+<!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
+
+- `collection` **[String]** - Name of collection
+- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
+- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
+- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+
+```js
+```
+
+<br>
+
+### [▲](#--adding-data)&nbsp;&nbsp; `.`
+
+<!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
+
+- `collection` **[String]** - Name of collection
+- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
+- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
+- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+
+```js
+```
+
+<br>
+
+### [▲](#--adding-data)&nbsp;&nbsp; `.`
+
+<!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
+
+- `collection` **[String]** - Name of collection
+- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
+- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
+- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+
+```js
+```
+
+<br>
+
+### [▲](#--adding-data)&nbsp;&nbsp; `.`
+
+<!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
+
+- `collection` **[String]** - Name of collection
+- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
+- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
+- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+
+```js
+```
+
+<br>
 
 ---
 
 ## [◤](#api)&nbsp;&nbsp; 📕 Deleting Data
 
-**Todo**
+- [leylo.deleteCollection()](#-)
+- [leylo.deleteDocById()](#-)
+- [leylo.deleteAllDocsByField()](#-)
+- [leylo.deleteAllDocsByQuery()](#-)
+- [leylo.deleteFieldByDocId()](#-)
+- [leylo.deleteAllFieldsContainingValue()](#-)
+- [leylo.deleteAllFieldsByQuery()](#-)
 
 ---
