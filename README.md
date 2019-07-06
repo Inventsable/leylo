@@ -118,7 +118,7 @@ query
 - [leylo.streamDocChangesByField()](#-streamdocchangesbyfieldcollection-field-value-callback-changetype-getdata)
 - [leylo.streamDocChangesByQuery()](#-streamdocchangesbyquerycollection-field-query-value-callback-changetype-getdata)
 - [leylo.getCollection()](#-getcollectioncollection-getdata)
-- [leylo.streamCollection()](#--streamcollectioncollection-callback-changetype-getdata)
+- [leylo.streamCollection()](#-streamcollectioncollection-callback-changetype-getdata)
 - leylo.streamPath
 
 <br>
@@ -466,14 +466,14 @@ let streamAllUserEvents = await leylo.streamCollection(
 
 ## [◤](#api)&nbsp;&nbsp; 📘 Adding Data
 
-- [leylo.addDoc()](#-)
-- [leylo.addAllDocs()](#-)
-- [leylo.setDocByPath()](#-)
-- [leylo.setAllDocsByPath()](#-)
-- [leylo.setDocById()](#-)
-- [leylo.setAllDocsById()](#-)
-- [leylo.setFieldByPath()](#-)
-- [leylo.setFieldById()](#-)
+- [leylo.addDoc()](#-adddoccollection-data)
+- [leylo.addAllDocs()](#-addalldocscollection-docs)
+- [leylo.setDocByPath()](#-setdocbypathpath-data-overwrite)
+- [leylo.setAllDocsByPath()](#-setalldocsbypathoverwrite-docs)
+- [leylo.setDocById()](#-setdocbyidcollection-id-data-overwrite)
+- [leylo.setAllDocsById()](#-setalldocsbyidcollection-overwrite-docs)
+- [leylo.setFieldByPath()](#-setfieldbypathpath-value)
+- [leylo.setFieldById()](#-setfieldbyidcollection-id-field-value)
 
 <br>
 
