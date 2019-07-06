@@ -109,7 +109,7 @@ query
 
 - [leylo.docExists()](#-docexistscollection-id)
 - [leylo.collectionExists()](#-collectionexistscollection)
-- leylo.getPath
+- [leylo.getPath](#-getpathpath-getdata)
 - [leylo.getCollection()](#-getcollectioncollection-getdata)
 - [leylo.getDocById()](#-getdocbyidcollection-id-getdata)
 - [leylo.getDocByField()](#-getdocbyfieldcollection-field-value-getdata)
@@ -118,11 +118,11 @@ query
 - [leylo.getAllDocsByQuery()](#-getalldocsbyquerycollection-field-query-value-getdata)
 - [leylo.getDocIdByField()](#-getdocidbyfieldcollection-field-value)
 - [leylo.getDocRefByField()](#-getdocrefbyfieldcollection-field-value)
+- [leylo.streamCollection()](#-streamcollectioncollection-callback-changetype-getdata)
+- leylo.streamPath
 - [leylo.streamDocChangesById()](#-streamdocchangesbyidcollection-id-callback-getdata)
 - [leylo.streamDocChangesByField()](#-streamdocchangesbyfieldcollection-field-value-callback-changetype-getdata)
 - [leylo.streamDocChangesByQuery()](#-streamdocchangesbyquerycollection-field-query-value-callback-changetype-getdata)
-- [leylo.streamCollection()](#-streamcollectioncollection-callback-changetype-getdata)
-- leylo.streamPath
 
 <br>
 
@@ -161,6 +161,24 @@ console.log(validation); //  Returns true
 
 <br>
 
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getPath(path[, getData?])`
+
+Returns `Array` or `Object` of specified `path` in Firestore or `False` if not found
+
+- `path` **[String]** - Path in the form colleciton or collection/document
+- `getData` **[Boolean]** (_Default: true_) - If `true` returns `documentSnapshot.data()` else returns `documentSnapshot`
+
+```js
+// Simple grab all documents within a collection:
+let userList = await leylo.path("users");
+console.log(userList); // Returns [{…}, {…}, {…}, {…}, {…}]
+
+let certainUser = await leylo.path("users/Inventsable");
+console.log(userList); // Returns { name: 'Tom Scharstein', ... }
+```
+
+<br>
+
 ### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getCollection(collection[, getData?])`
 
 Returns `Object` with specified `id` in Firestore or `False` if not found
@@ -173,7 +191,7 @@ Returns `Object` with specified `id` in Firestore or `False` if not found
 let userList = await leylo.getCollection("userList");
 console.log(userList); // Returns [{…}, {…}, {…}, {…}, {…}]
 
-//
+// If needing to grab the Document Reference, we can pass false to getData:
 let doSomethingEveryUser = leylo
   .getCollection("userList", false)
   .then(users => {
@@ -335,6 +353,78 @@ usersInArizona.forEach(user => {
 
 <br>
 
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.streamCollection(collection[, callback, changeType, getData?])`
+
+Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified
+
+- `collection` **[String]** - Name of collection
+- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
+- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
+- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+
+```js
+// Simple usage:
+let streamUsers = await leylo.streamCollection("users", res => {
+  console.log("User detected:");
+  console.log(res); // Returns { name: 'Inventsable', ... }
+});
+
+// From the demo page:
+let addUserStream = await leylo.streamCollection(
+  "users",
+  this.addUserIfNotInList,
+  "added"
+);
+
+// Above is the same as:
+let addUserStream = await leylo.streamCollection(
+  "users",
+  user => {
+    // If this.userList doesn't already contain this user, add it to our component's data:
+    if (!this.userList.some(person => person.fullName == user.fullName))
+      this.userList.push(user);
+  },
+  "added"
+);
+
+// Automatically remove user from this.userList via method:
+async mounted() {
+  this.startRemoveStream()
+},
+methods: {
+  async startRemoveStream() {
+    return await leylo.streamCollection(
+      "users",
+      user => {
+        // Easy to update by filtering this.userList to entries not equal to the document just removed:
+        this.userList = this.userList.filter(item => {
+          return item.fullName !== user.data().fullName;
+        });
+      },
+      "removed",
+      // Passing false to getData in case we need the Document.id or see changes
+      false
+    );
+  },
+}
+```
+
+<br>
+
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.streamPath(path[, callback, changeType, getData?])`
+
+Returns `Object` which can be programmatically detached.
+
+- `path` **[String]** - Any valid path from `collection` to `collection/document`
+- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
+- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
+- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+
+```js
+```
+
+<br>
+
 ### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.streamDocChangesById(collection, id[, callback, changeType, getData?])`
 
 Returns result of passing document `Object` as parameter to `callback` every time the document is modified
@@ -418,49 +508,6 @@ let userList = await leylo.streamDocChangesById(
   "chatroomA",
   this.addUser,
   "added",
-  false
-);
-```
-
-<br>
-
-### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.streamCollection(collection[, callback, changeType, getData?])`
-
-Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified
-
-- `collection` **[String]** - Name of collection
-- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
-- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
-- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
-
-```js
-let streamUsers = await leylo.streamCollection("users", res => {
-  console.log("User detected:");
-  console.log(res); // Returns { name: 'Inventsable', ... }
-});
-
-let streamWelcomeNewUsers = await leylo.streamCollection(
-  "users",
-  user => {
-    console.log(`${user.id} at ${user.ref.path}: Wecome ${user.data().name}!`);
-  },
-  "added",
-  false
-);
-
-// Passing document reference to handleChange() method whenever any doc is modified within collection:
-let streamEditsToAnyUser = await leylo.streamCollection(
-  "user",
-  this.handleChange,
-  "modified",
-  false
-);
-
-// If needing to access documentQuery with no changeType specified, assign null:
-let streamAllUserEvents = await leylo.streamCollection(
-  "messages",
-  this.handleMessage,
-  null, // if null handle all events, else "modified", "added", or "removed"
   false
 );
 ```
@@ -672,8 +719,8 @@ console.log(setNewLocation);
 
 ## [◤](#-api)&nbsp;&nbsp; 📕 Deleting Data
 
-- [leylo.deleteCollection()](#-)
 - leylo.deletePath()
+- [leylo.deleteCollection()](#-)
 - [leylo.deleteDocById()](#-)
 - [leylo.deleteAllDocsByField()](#-)
 - [leylo.deleteAllDocsByQuery()](#-)
@@ -683,14 +730,22 @@ console.log(setNewLocation);
 
 ---
 
-- `collection` **[String]** - Name of collection
-- `id` **[String]** - Name/ID of document within collection
-- `field` **[String]** - Name of key within document
-- `value` **[Any]** - New value to write to specified `path`
+### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deletePath(path)`
+
+Returns `Boolean` if path was successfully deleted
+
+- `path` **[String]** - Any valid path from `collection` to `collection/document/field`
+
+```js
+```
+
+<br>
 
 ### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteCollection(collection)`
 
-Returns `Boolean`
+> Same as using `await leylo.deletePath(collection)`
+
+Returns `Array` of `Booleans` for number of documents successfully deleted
 
 - `collection` **[String]** - Name of collection
 
@@ -713,20 +768,25 @@ Returns `Boolean`
 
 ### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllDocsByField(collection, field, value)`
 
-Returns `Boolean`
+Returns `Array` of `Booleans` for whether documents were successfully deleted
 
 - `collection` **[String]** - Name of collection
+- `field` **[String]** - Name of key within document
+- `value` **[Any]** - New value to write to specified `path`
 
 ```js
 ```
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllDocsByQuery(collection, query, field, value)`
+### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllDocsByQuery(collection, field, query, value)`
 
-Returns `Boolean`
+Returns `Array` of `Booleans` for whether docs were successfully deleted
 
 - `collection` **[String]** - Name of collection
+- `field` **[String]** - Name of key within document
+- `query` **[String]** - One of `==`, `>=`, `<=`, `>`, `<`, `array_contains` or valid Firebase query string
+- `value` **[Any]** - New value to write to specified `path`
 
 ```js
 ```
@@ -735,9 +795,11 @@ Returns `Boolean`
 
 ### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteFieldByDocId(collection, id, field)`
 
-Returns `Boolean`
+Returns `Boolean` for whether field was successfully deleted from document
 
 - `collection` **[String]** - Name of collection
+- `id` **[String]** - Name/ID of document within collection
+- `field` **[String]** - Name of key within document
 
 ```js
 ```
@@ -746,9 +808,11 @@ Returns `Boolean`
 
 ### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllFieldsContainingValue(collection, field, value)`
 
-Returns `Boolean`
+Returns `Array` of `Booleans` for whether fields were successfully deleted
 
 - `collection` **[String]** - Name of collection
+- `field` **[String]** - Name of key within document
+- `value` **[Any]** - New value to write to specified `path`
 
 ```js
 ```
@@ -757,9 +821,12 @@ Returns `Boolean`
 
 ### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllFieldsByQuery(collection, field, query, value)`
 
-Returns `Boolean`
+Returns `Array` of `Booleans` for whether fields were successfully deleted
 
 - `collection` **[String]** - Name of collection
+- `field` **[String]** - Name of key within document
+- `query` **[String]** - One of `==`, `>=`, `<=`, `>`, `<`, `array_contains` or valid Firebase query string
+- `value` **[Any]** - New value to write to specified `path`
 
 ```js
 ```
