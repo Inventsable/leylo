@@ -1,6 +1,6 @@
 # leylo [![npm version](https://badge.fury.io/js/leylo.svg)](https://badge.fury.io/js/leylo) [![Known Vulnerabilities](https://snyk.io/test/github/Inventsable/leylo/badge.svg)](https://snyk.io/test/github/Inventsable/leylo)
 
-| [🔨 <span style="font-size: 1.25rem; font-weight: 500;">Installation</span>](#-installation) | [🔑 <span style="font-size: 1.25rem; font-weight: 500;">Requirements</span>](#-requirements) | [🏆 <span style="font-size: 1.25rem; font-weight: 500;">Usage</span>](#-usage) | [📚 <span style="font-size: 1.25rem; font-weight: 500;">API</span>](#-api) |
+| 🔨 <span style="font-size: 1.25rem; font-weight: 500;">[Installation](#-installation)</span> | [🔑 <span style="font-size: 1.25rem; font-weight: 500;">Requirements</span>](#-requirements) | [🏆 <span style="font-size: 1.25rem; font-weight: 500;">Usage</span>](#-usage) | [📚 <span style="font-size: 1.25rem; font-weight: 500;">API</span>](#-api) |
 | -------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------: | :------------------------------------------------------------------------: |
 
 
