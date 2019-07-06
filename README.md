@@ -464,7 +464,7 @@ let streamAllUserEvents = await leylo.streamCollection(
 
 ---
 
-## [◤](#api)&nbsp;&nbsp; 📘 Adding Data
+## [◤](#-api)&nbsp;&nbsp; 📘 Adding Data
 
 - [leylo.addDoc()](#-adddoccollection-data)
 - [leylo.addAllDocs()](#-addalldocscollection-docs)
@@ -665,9 +665,10 @@ console.log(setNewLocation);
 
 ---
 
-## [◤](#api)&nbsp;&nbsp; 📕 Deleting Data
+## [◤](#-api)&nbsp;&nbsp; 📕 Deleting Data
 
 - [leylo.deleteCollection()](#-)
+- leylo.deletePath()
 - [leylo.deleteDocById()](#-)
 - [leylo.deleteAllDocsByField()](#-)
 - [leylo.deleteAllDocsByQuery()](#-)
@@ -676,3 +677,86 @@ console.log(setNewLocation);
 - [leylo.deleteAllFieldsByQuery()](#-)
 
 ---
+
+- `collection` **[String]** - Name of collection
+- `id` **[String]** - Name/ID of document within collection
+- `field` **[String]** - Name of key within document
+- `value` **[Any]** - New value to write to specified `path`
+
+### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteCollection(collection)`
+
+Returns `Boolean`
+
+- `collection` **[String]** - Name of collection
+
+```js
+```
+
+<br>
+
+### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteDocById(collection, id)`
+
+Returns `Boolean`
+
+- `collection` **[String]** - Name of collection
+- `id` **[String]** - Name/ID of document within collection
+
+```js
+```
+
+<br>
+
+### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllDocsByField(collection, field, value)`
+
+Returns `Boolean`
+
+- `collection` **[String]** - Name of collection
+
+```js
+```
+
+<br>
+
+### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllDocsByQuery(collection, query, field, value)`
+
+Returns `Boolean`
+
+- `collection` **[String]** - Name of collection
+
+```js
+```
+
+<br>
+
+### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteFieldByDocId(collection, id, field)`
+
+Returns `Boolean`
+
+- `collection` **[String]** - Name of collection
+
+```js
+```
+
+<br>
+
+### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllFieldsContainingValue(collection, field, value)`
+
+Returns `Boolean`
+
+- `collection` **[String]** - Name of collection
+
+```js
+```
+
+<br>
+
+### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllFieldsByQuery(collection, field, query, value)`
+
+Returns `Boolean`
+
+- `collection` **[String]** - Name of collection
+
+```js
+```
+
+<br>
