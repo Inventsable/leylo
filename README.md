@@ -95,23 +95,23 @@ query
 
 ---
 
-<span style="position: absolute; right: 0px">[Back to API](#api)</span>
+<span style="float: right;">[Back to API](#api)</span>
 <br>
 
 <!-- <span style="float: right">[Back to API 2](#api)</span> -->
 
 ## Retreiving Data
 
-- [leylo.docExists()](#docexistscollection-id)
-- [leylo.collectionExists()](#collectionexistscollection)
-- [leylo.getDocById()](#getdocbyidcollection-id-getdata)
-- [leylo.getDocByField()](#getdocbyfieldcollection-field-value-getdata)
-- [leylo.getDocByQuery()](#getdocbyquerycollection-field-query-value-getdata)
-- [leylo.getAllDocsByField()](#getalldocsbyfieldcollection-field-value-getdata)
-- [leylo.getAllDocsByQuery()](#getalldocsbyquerycollection-field-query-value-getdata)
-- [leylo.getDocIdByField()](#getdocidbyfieldcollection-field-value)
-- [leylo.getDocRefByField()](#getdocrefbyfieldcollection-field-value)
-- [leylo.streamDocChangesById()](#streamdocchangesbyidcollection-id-callback-getdata)
+- [leylo.docExists()](#-docexistscollection-id)
+- [leylo.collectionExists()](#-collectionexistscollection)
+- [leylo.getDocById()](#-getdocbyidcollection-id-getdata)
+- [leylo.getDocByField()](#-getdocbyfieldcollection-field-value-getdata)
+- [leylo.getDocByQuery()](#-getdocbyquerycollection-field-query-value-getdata)
+- [leylo.getAllDocsByField()](#-getalldocsbyfieldcollection-field-value-getdata)
+- [leylo.getAllDocsByQuery()](#-getalldocsbyquerycollection-field-query-value-getdata)
+- [leylo.getDocIdByField()](#-getdocidbyfieldcollection-field-value)
+- [leylo.getDocRefByField()](#-getdocrefbyfieldcollection-field-value)
+- [leylo.streamDocChangesById()](#-streamdocchangesbyidcollection-id-callback-getdata)
 
 <br>
 
