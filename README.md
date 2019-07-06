@@ -65,14 +65,14 @@ No quotation marks needed in `.env` the above
 
 All methods are accessible as properties of `leylo`, as in `leylo.docExists(...)`.
 
-<span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;📗 [Global](#--global)<span><br>
-<span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;📙 [Retrieving Data](#--retreiving-data)<span><br>
-<span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;📘 [Adding Data](#--adding-data)<span><br>
-<span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;📕 [Deleting Data](#--deleting-data)<span><br>
+<span style="font-size: 1.25rem; font-weight: 500;">&nbsp;&nbsp;&nbsp;&nbsp;📗 [Global](#--global)<span><br>
+<span style="font-size: 1.25rem; font-weight: 500;">&nbsp;&nbsp;&nbsp;&nbsp;📙 [Retrieving Data](#--retreiving-data)<span><br>
+<span style="font-size: 1.25rem; font-weight: 500;">&nbsp;&nbsp;&nbsp;&nbsp;📘 [Adding Data](#--adding-data)<span><br>
+<span style="font-size: 1.25rem; font-weight: 500;">&nbsp;&nbsp;&nbsp;&nbsp;📕 [Deleting Data](#--deleting-data)<span><br>
 
-## [◤](#api)&nbsp;&nbsp; 📗 Global
+## [◤](#-api)&nbsp;&nbsp; 📗 Global
 
-> [◤](#api)&nbsp;&nbsp; Click these arrows to return to the top of the API
+> [◤](#-api)&nbsp;&nbsp; Click these arrows to return to the top of the API
 
 > [▲](#--global)&nbsp;&nbsp; Click these arrows to return to the top of each segment
 
