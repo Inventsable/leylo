@@ -74,7 +74,7 @@ All methods are accessible as properties of `leylo`, as in `leylo.docExists(...)
 
 > [◤](#-api)&nbsp;&nbsp; Click these arrows to return to the top of the API
 
-### [▲](#--global)&nbsp;&nbsp; `.db`
+### &nbsp;&nbsp;[▲](#--global)&nbsp;&nbsp; `.db`
 
 Returns `Object` of interior `Firestore` used for all queries.
 
@@ -115,17 +115,17 @@ query
 - [leylo.getDocIdByField()](#-getdocidbyfieldcollection-field-value)
 - [leylo.getDocRefByField()](#-getdocrefbyfieldcollection-field-value)
 - [leylo.streamDocChangesById()](#-streamdocchangesbyidcollection-id-callback-getdata)
-- [leylo.streamDocChangesByField()](#-)
-- [leylo.streamDocChangesByQuery()](#-)
-- [leylo.getCollection()](#-)
-- [leylo.streamCollection()](#-)
+- [leylo.streamDocChangesByField()](#-streamdocchangesbyfieldcollection-field-value-callback-changetype-getdata)
+- [leylo.streamDocChangesByQuery()](#-streamdocchangesbyquerycollection-field-query-value-callback-changetype-getdata)
+- [leylo.getCollection()](#-getcollectioncollection-getdata)
+- [leylo.streamCollection()](#--streamcollectioncollection-callback-changetype-getdata)
 - leylo.streamPath
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.docExists(collection, id)`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.docExists(collection, id)`
 
-> [▲](#--global)&nbsp;&nbsp; Click these arrows to return to the top of each segment
+> &nbsp;&nbsp;[▲](#--global)&nbsp;&nbsp; Click these arrows to return to the top of each segment
 
 Returns `Boolean` of whether document with specified `id` is found in Firestore
 
@@ -145,7 +145,7 @@ leylo.docExists("users", "Inventsable").then(response => {
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.collectionExists(collection)`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.collectionExists(collection)`
 
 Returns `Boolean` of whether collection with specified name is found in Firestore
 
@@ -158,7 +158,7 @@ console.log(validation); //  Returns true
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.getDocById(collection, id[, getData?])`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getDocById(collection, id[, getData?])`
 
 Returns `Object` with specified `id` in Firestore or `False` if not found
 
@@ -173,7 +173,7 @@ console.log(user); //  Returns { name: 'Tom Scharstein', ... }
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.getDocByField(collection, field, value[, getData?])`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getDocByField(collection, field, value[, getData?])`
 
 Returns `Object` with specified `field` = `value` in Firestore or `False` if not found
 
@@ -189,7 +189,7 @@ console.log(user); //  Returns { name: 'Tom Scharstein', ... }
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.getAllDocsByField(collection, field, value[, getData?])`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getAllDocsByField(collection, field, value[, getData?])`
 
 Returns `Array` of every `Object` with specified `field` = `value` in Firestore or `False` if none found
 
@@ -212,7 +212,7 @@ usersInArizona.forEach(user => {
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.getDocIdByField(collection, field, value)`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getDocIdByField(collection, field, value)`
 
 > Same as using `await leylo.getDocByField("users", "name", "Tom Scharstein", false).id`
 
@@ -229,7 +229,7 @@ console.log(user); //  Returns 'Inventsable'
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.getDocRefByField(collection, field, value)`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getDocRefByField(collection, field, value)`
 
 > Same as using `await leylo.getDocByField("users", "name", "Tom Scharstein", false).ref.path`
 
@@ -246,7 +246,7 @@ console.log(user); //  Returns 'users/Inventsable'
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.getDocByQuery(collection, field, query, value[, getData?])`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getDocByQuery(collection, field, query, value[, getData?])`
 
 Returns first `Object` found with specified `field` `(query)` `value` in Firestore or `False` if not found
 
@@ -271,7 +271,7 @@ placeTooHotToLiveIn.forEach(place => {
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.getAllDocsByQuery(collection, field, query, value[, getData?])`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getAllDocsByQuery(collection, field, query, value[, getData?])`
 
 Returns `Array` of every `Object` with specified `field` `(query)` `value` in Firestore or `False` if none found
 
@@ -296,7 +296,7 @@ usersInArizona.forEach(user => {
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.streamDocChangesById(collection, id[, callback, changeType, getData?])`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.streamDocChangesById(collection, id[, callback, changeType, getData?])`
 
 Returns result of passing document `Object` as parameter to `callback` every time the document is modified
 
@@ -338,7 +338,7 @@ methods: {
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.streamDocChangesByField(collection, field, value[, callback, changeType, getData?])`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.streamDocChangesByField(collection, field, value[, callback, changeType, getData?])`
 
 Returns **every matching** result of passing document `Object` as parameter to `callback` every time the document is modified.
 
@@ -361,7 +361,7 @@ let userList = await leylo.streamDocChangesById(
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.streamDocChangesByQuery(collection, field, query, value[, callback, changeType, getData?])`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.streamDocChangesByQuery(collection, field, query, value[, callback, changeType, getData?])`
 
 Returns **every matching** result of passing document `Object` as parameter to `callback` every time the document is modified
 
@@ -383,7 +383,7 @@ let userList = await leylo.streamDocChangesById(
 );
 ```
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.getCollection(collection[, getData?])`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getCollection(collection[, getData?])`
 
 Returns `Object` with specified `id` in Firestore or `False` if not found
 
@@ -419,7 +419,7 @@ console.log(`This prints at the bottom`);
 
 <br>
 
-### [▲](#--retreiving-data)&nbsp;&nbsp; `.streamCollection(collection[, callback, changeType, getData?])`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.streamCollection(collection[, callback, changeType, getData?])`
 
 Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified
 
@@ -477,7 +477,7 @@ let streamAllUserEvents = await leylo.streamCollection(
 
 <br>
 
-### [▲](#--adding-data)&nbsp;&nbsp; `.setDoc(collection, id, data[, overwrite?])`
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.setDoc(collection, id, data[, overwrite?])`
 
 Returns `Boolean` of whether the document was successfully written to Firestore collection
 
@@ -491,7 +491,7 @@ Returns `Boolean` of whether the document was successfully written to Firestore 
 
 <br>
 
-### [▲](#--adding-data)&nbsp;&nbsp; `.`
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.`
 
 <!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
 
@@ -505,7 +505,7 @@ Returns `Boolean` of whether the document was successfully written to Firestore 
 
 <br>
 
-### [▲](#--adding-data)&nbsp;&nbsp; `.`
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.`
 
 <!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
 
@@ -519,7 +519,7 @@ Returns `Boolean` of whether the document was successfully written to Firestore 
 
 <br>
 
-### [▲](#--adding-data)&nbsp;&nbsp; `.`
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.`
 
 <!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
 
@@ -533,7 +533,7 @@ Returns `Boolean` of whether the document was successfully written to Firestore 
 
 <br>
 
-### [▲](#--adding-data)&nbsp;&nbsp; `.`
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.`
 
 <!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
 
@@ -547,7 +547,7 @@ Returns `Boolean` of whether the document was successfully written to Firestore 
 
 <br>
 
-### [▲](#--adding-data)&nbsp;&nbsp; `.`
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.`
 
 <!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
 
