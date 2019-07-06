@@ -66,9 +66,13 @@ All methods are accessible as properties of `leylo`, as in `leylo.docExists(...)
 <span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;- [Adding Data](#adding-data)<span><br>
 <span style="font-size: 1.25rem">&nbsp;&nbsp;&nbsp;&nbsp;- [Deleting Data](#deleting-data)<span><br>
 
-## Global
+## [◤](#api)&nbsp;&nbsp; Global
 
-### `.db`
+> [◤](#api)&nbsp;&nbsp; Click these arrows to return to this list
+
+> [▲](#api)&nbsp;&nbsp; Click these arrows to return to the top of each segment
+
+### [▲](#global)&nbsp;&nbsp; `.db`
 
 Returns `Object` of interior `Firestore` used for all queries.
 
@@ -95,12 +99,9 @@ query
 
 ---
 
-<span style="float: right;">[Back to API](#api)</span>
-<br>
-
 <!-- <span style="float: right">[Back to API 2](#api)</span> -->
 
-## Retreiving Data
+## [◤](#api)&nbsp;&nbsp; Retreiving Data
 
 - [leylo.docExists()](#-docexistscollection-id)
 - [leylo.collectionExists()](#-collectionexistscollection)
