@@ -1,12 +1,12 @@
 # leylo [![npm version](https://badge.fury.io/js/leylo.svg)](https://badge.fury.io/js/leylo) [![Known Vulnerabilities](https://snyk.io/test/github/Inventsable/leylo/badge.svg)](https://snyk.io/test/github/Inventsable/leylo)
 
+| [📕 Installation](#Installation) | [📙 Requirements](#Requirements) | [📗 Usage](#Usage) | [📘 API](#API) |
+| -------------------------------- | :------------------------------: | :----------------: | :------------: |
+
+
 Asynchronous utility functions for [Firestore](https://firebase.google.com/docs/firestore/quickstart) within [Vue CLI 3](https://cli.vuejs.org/).
 
-| [Installation](#Installation) | [Requirements](#Requirements) | [Usage](#Usage) | [API](#API) |
-| ----------------------------- | :---------------------------: | :-------------: | :---------: |
-
-
-## Installation
+## 📕 Installation
 
 ```bash
 npm install leylo
@@ -16,7 +16,7 @@ If not using Firebase Hosting, there's no need to `npm install firebase` or `npm
 
 ---
 
-## Requirements
+## 📙 Requirements
 
 You must have a `.env` file at the root of your Vue CLI 3 repo containing the following key/value pairs ([template available in this repo](https://github.com/Inventsable/leylo/blob/master/.env)):
 
@@ -36,7 +36,7 @@ No quotation marks needed in `.env` the above
 
 ---
 
-## Usage
+## 📗 Usage
 
 ```html
 <script>
@@ -61,7 +61,7 @@ No quotation marks needed in `.env` the above
 
 ---
 
-# API
+## 📘 API
 
 All methods are accessible as properties of `leylo`, as in `leylo.docExists(...)`.
 
