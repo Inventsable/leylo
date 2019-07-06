@@ -4,6 +4,7 @@
   "description": "Utility functions for Firestore within Vue CLI 3",
   "main": "index.js",
   "dependencies": {
+    "@google-cloud/firestore": "^2.2.3",
     "firebase": "^6.2.4"
   },
   "devDependencies": {},

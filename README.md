@@ -96,12 +96,12 @@ query
 - [leylo.collectionExists()](#collectionexistscollection)
 - [leylo.getDocById()](#getdocbyidcollection-id-getdata)
 - [leylo.getDocByField()](#getdocbyfieldcollection-field-value-getdata)
+- [leylo.getDocByQuery()](#getdocbyquerycollection-field-query-value-getdata)
 - [leylo.getAllDocsByField()](#getalldocsbyfieldcollection-field-value-getdata)
+- [leylo.getAllDocsByQuery()](#getalldocsbyquerycollection-field-query-value-getdata)
 - [leylo.getDocIdByField()](#getdocidbyfieldcollection-field-value)
 - [leylo.getDocRefByField()](#getdocrefbyfieldcollection-field-value)
-- [leylo.queryDocByField()](#querydocbyfieldcollection-field-query-value-getdata)
-- [leylo.queryAllDocsByField()](#queryalldocsbyfieldcollection-field-query-value-getdata)
-- [leylo.streamDocChanges()](#streamdocchangescollection-id-callback-getdata)
+- [leylo.streamDocChangesById()](#streamdocchangesbyidcollection-id-callback-getdata)
 
 <br>
 
@@ -226,18 +226,18 @@ console.log(user); //  Returns 'users/Inventsable'
 
 <br>
 
-### `.queryDocByField(collection, field, query, value[, getData?])`
+### `.getDocByQuery(collection, field, query, value[, getData?])`
 
 Returns first `Object` found with specified `field` `(query)` `value` in Firestore or `False` if not found
 
 - `collection` **[String]** - Name of collection
 - `field` **[String]** - Name of key/field of target document
-- `query` **[String]** - One of `==`, `>=`, `<=`, `>`, `<`, or valid Firebase query string
+- `query` **[String]** - One of `==`, `>=`, `<=`, `>`, `<`, `array_contains` or valid Firebase query string
 - `value` **[String]** - Value of key/field of target document
 - `getData` **[Boolean]** (_Default: true_) - If `true` returns `documentSnapshot.data()` else returns `documentSnapshot`
 
 ```js
-let placeTooHotToLiveIn = await leylo.queryDocByField(
+let placeTooHotToLiveIn = await leylo.getDocByQuery(
   "states",
   "temperature",
   ">="
@@ -251,18 +251,18 @@ placeTooHotToLiveIn.forEach(place => {
 
 <br>
 
-### `.queryAllDocsByField(collection, field, query, value[, getData?])`
+### `.getAllDocsByQuery(collection, field, query, value[, getData?])`
 
 Returns `Array` of every `Object` with specified `field` `(query)` `value` in Firestore or `False` if none found
 
 - `collection` **[String]** - Name of collection
 - `field` **[String]** - Name of key/field of target document
-- `query` **[String]** - One of `==`, `>=`, `<=`, `>`, `<`, or valid Firebase query string
+- `query` **[String]** - One of `==`, `>=`, `<=`, `>`, `<`, `array_contains` or valid Firebase query string
 - `value` **[String]** - Value of key/field of target document
 - `getData` **[Boolean]** (_Default: true_) - If `true` returns `documentSnapshot.data()` else returns `documentSnapshot`
 
 ```js
-let usersInArizona = await leylo.queryAllDocsByField(
+let usersInArizona = await leylo.getAllDocsByQuery(
   "users",
   "location",
   "==",
@@ -276,19 +276,20 @@ usersInArizona.forEach(user => {
 
 <br>
 
-### `.streamDocChanges(collection, id, callback[, getData?])`
+### `.streamDocChangesById(collection, id[, callback, changeType, getData?])`
 
 Returns result of passing document `Object` as parameter to `callback` every time the document is modified
 
 - `collection` **[String]** - Name of collection
 - `id` **[String]** - Name/ID of document within collection
-- `callback` **[Function]** - Function to execute on every change to document
+- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document
+- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
 - `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
 
 ```js
 
 // Can do this during created(), mounted() or some init function
-let messages = await leylo.streamDocChanges(
+let messages = await leylo.streamDocChangesById(
   "messages",
   "chatroomA",
   newdata => {
@@ -298,10 +299,11 @@ let messages = await leylo.streamDocChanges(
   }
 );
 
-let userList = await leylo.streamDocChanges(
+let userList = await leylo.streamDocChangesById(
   "users",
   "chatroomA",
   this.addUser,
+  'added',
   false
 );
 
@@ -312,6 +314,96 @@ methods: {
   }
 }
 
+```
+
+<br>
+
+### `.streamDocChangesByField(collection, field, value[, callback, changeType, getData?])`
+
+Returns **every matching** result of passing document `Object` as parameter to `callback` every time the document is modified.
+
+- `collection` **[String]** - Name of collection
+- `field` **[String]** - Name of key/field of target document
+- `value` **[String]** - Value of key/field of target document
+- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document
+- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
+- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+
+```js
+let userList = await leylo.streamDocChangesById(
+  "users",
+  "chatroomA",
+  this.addUser,
+  "added",
+  false
+);
+```
+
+<br>
+
+### `.streamDocChangesByQuery(collection, field, query, value[, callback, changeType, getData?])`
+
+Returns **every matching** result of passing document `Object` as parameter to `callback` every time the document is modified
+
+- `collection` **[String]** - Name of collection
+- `field` **[String]** - Name of key/field of target document
+- `query` **[String]** - One of `==`, `>=`, `<=`, `>`, `<`, `array_contains` or valid Firebase query string
+- `value` **[String]** - Value of key/field of target document
+- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document
+- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
+- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+
+```js
+let userList = await leylo.streamDocChangesById(
+  "users",
+  "chatroomA",
+  this.addUser,
+  "added",
+  false
+);
+```
+
+<br>
+
+### `.streamCollection(collection[, callback, changeType, getData?])`
+
+Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified
+
+- `collection` **[String]** - Name of collection
+- `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
+- `changeType` **[String]** (_Default: null_) - If `null` listen to all, else one of `added`, `modified`, or `removed`
+- `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
+
+```js
+let userStream = await leylo.streamCollection("users", res => {
+  console.log("user detected:");
+  console.log(res); // Returns { name: 'Tom Scharstein', ... }
+});
+
+let messageStream = await leylo.streamCollection(
+  "messages",
+  res => {
+    console.log("New message added:");
+    console.log(res);
+  },
+  "added",
+  false
+);
+
+// Pass all modified documents of collection to specified handleMessage() method:
+let editStream = await leylo.streamCollection(
+  "messages",
+  this.handleMessage,
+  "modified"
+);
+
+// If needing to access documentQuery with no changeType specified, assign null:
+let editStream2 = await leylo.streamCollection(
+  "messages",
+  this.handleMessage,
+  null,
+  false
+);
 ```
 
 <br>
