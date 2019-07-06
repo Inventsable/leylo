@@ -433,36 +433,7 @@ export default (leylo = {
       });
   },
 
-  setDoc: async function(collection, id, data, overwrite = false) {
-    return overwrite
-      ? await db
-          .collection(collection)
-          .doc(id)
-          .set(data)
-          .then(() => {
-            return Promise.resolve(true);
-          })
-          .catch(err => {
-            return Promise.reject(err);
-          })
-      : await db
-          .collection(collection)
-          .doc(id)
-          .set(data, { merge: true })
-          .then(() => {
-            return Promise.resolve(true);
-          })
-          .catch(err => {
-            return Promise.reject(err);
-          });
-  },
-  setAllDocs: async function(collection, overwrite, ...docs) {
-    return Promise.all(
-      docs.map(doc => {
-        return this.setDoc(collection, doc[0], doc[1], overwrite);
-      })
-    );
-  },
+  // ADDING
   setDocByPath: async function(path, data, overwrite = false) {
     return overwrite
       ? await db
@@ -491,6 +462,36 @@ export default (leylo = {
       })
     );
   },
+  setDocById: async function(collection, id, data, overwrite = false) {
+    return overwrite
+      ? await db
+          .collection(collection)
+          .doc(id)
+          .set(data)
+          .then(() => {
+            return Promise.resolve(true);
+          })
+          .catch(err => {
+            return Promise.reject(err);
+          })
+      : await db
+          .collection(collection)
+          .doc(id)
+          .set(data, { merge: true })
+          .then(() => {
+            return Promise.resolve(true);
+          })
+          .catch(err => {
+            return Promise.reject(err);
+          });
+  },
+  setAllDocsById: async function(collection, overwrite, ...docs) {
+    return Promise.all(
+      docs.map(doc => {
+        return this.setDoc(collection, doc[0], doc[1], overwrite);
+      })
+    );
+  },
   setFieldByPath: async function(path, value) {
     path = path.split("/");
     if (path.length !== 3)
@@ -512,7 +513,7 @@ export default (leylo = {
         return Promise.reject(err);
       });
   },
-  setFieldByDocId: async function(collection, id, field, newvalue) {
+  setFieldById: async function(collection, id, field, newvalue) {
     return await db
       .collection(collection)
       .doc(id)
@@ -529,10 +530,10 @@ export default (leylo = {
         return Promise.reject(err);
       });
   },
-  addDoc: async function(collection, contents) {
+  addDoc: async function(collection, data) {
     return await db
       .collection(collection)
-      .add(contents)
+      .add(data)
       .then(ref => {
         return Promise.resolve(ref);
       })
