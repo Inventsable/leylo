@@ -107,6 +107,8 @@ query
 
 - [leylo.docExists()](#-docexistscollection-id)
 - [leylo.collectionExists()](#-collectionexistscollection)
+- leylo.getPath
+- [leylo.getCollection()](#-getcollectioncollection-getdata)
 - [leylo.getDocById()](#-getdocbyidcollection-id-getdata)
 - [leylo.getDocByField()](#-getdocbyfieldcollection-field-value-getdata)
 - [leylo.getDocByQuery()](#-getdocbyquerycollection-field-query-value-getdata)
@@ -117,7 +119,6 @@ query
 - [leylo.streamDocChangesById()](#-streamdocchangesbyidcollection-id-callback-getdata)
 - [leylo.streamDocChangesByField()](#-streamdocchangesbyfieldcollection-field-value-callback-changetype-getdata)
 - [leylo.streamDocChangesByQuery()](#-streamdocchangesbyquerycollection-field-query-value-callback-changetype-getdata)
-- [leylo.getCollection()](#-getcollectioncollection-getdata)
 - [leylo.streamCollection()](#-streamcollectioncollection-callback-changetype-getdata)
 - leylo.streamPath
 
@@ -154,6 +155,42 @@ Returns `Boolean` of whether collection with specified name is found in Firestor
 ```js
 let validation = await leylo.collectionExists("users");
 console.log(validation); //  Returns true
+```
+
+<br>
+
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getCollection(collection[, getData?])`
+
+Returns `Object` with specified `id` in Firestore or `False` if not found
+
+- `collection` **[String]** - Name of collection
+- `getData` **[Boolean]** (_Default: true_) - If `true` returns `documentSnapshot.data()` else returns `documentSnapshot`
+
+```js
+// Simple grab all documents within a collection:
+let userList = await leylo.getCollection("userList");
+console.log(userList); // Returns [{…}, {…}, {…}, {…}, {…}]
+
+//
+let doSomethingEveryUser = leylo
+  .getCollection("userList", false)
+  .then(users => {
+    users.forEach(user => {
+      console.log(`${user.id} is at ${user.ref.path} and contains:`); // Inventsable is at userList/Inventsable and contains
+      console.log(user.data()); // Returns Object with document contents { ... }
+    });
+  });
+
+let doSomethingAsyncForList = await leylo.getCollection("userList", false);
+console.log("This prints at the top");
+Promise.all(
+  doSomethingAsyncEveryUser.map(user => {
+    console.log(`This prints in the middle: ${user.id}`); // This prints in the middle: Inventsable
+    Promise.resolve(true);
+  })
+);
+console.log(`This prints at the bottom`);
+// Now continue to next code
 ```
 
 <br>
@@ -381,40 +418,6 @@ let userList = await leylo.streamDocChangesById(
   "added",
   false
 );
-```
-
-### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getCollection(collection[, getData?])`
-
-Returns `Object` with specified `id` in Firestore or `False` if not found
-
-- `collection` **[String]** - Name of collection
-- `getData` **[Boolean]** (_Default: true_) - If `true` returns `documentSnapshot.data()` else returns `documentSnapshot`
-
-```js
-// Simple grab all documents within a collection:
-let userList = await leylo.getCollection("userList");
-console.log(userList); // Returns [{…}, {…}, {…}, {…}, {…}]
-
-//
-let doSomethingEveryUser = leylo
-  .getCollection("userList", false)
-  .then(users => {
-    users.forEach(user => {
-      console.log(`${user.id} is at ${user.ref.path} and contains:`); // Inventsable is at userList/Inventsable and contains
-      console.log(user.data()); // Returns Object with document contents { ... }
-    });
-  });
-
-let doSomethingAsyncForList = await leylo.getCollection("userList", false);
-console.log("This prints at the top");
-Promise.all(
-  doSomethingAsyncEveryUser.map(user => {
-    console.log(`This prints in the middle: ${user.id}`); // This prints in the middle: Inventsable
-    Promise.resolve(true);
-  })
-);
-console.log(`This prints at the bottom`);
-// Now continue to next code
 ```
 
 <br>
