@@ -1,7 +1,7 @@
 # leylo [![npm version](https://badge.fury.io/js/leylo.svg)](https://badge.fury.io/js/leylo) [![Known Vulnerabilities](https://snyk.io/test/github/Inventsable/leylo/badge.svg)](https://snyk.io/test/github/Inventsable/leylo)
 
-| [Installation](#installation) | [Requirements](#requirements) | [Usage](#usage) | [📚 API](#-api) |
-| ----------------------------- | :---------------------------: | :-------------: | :-------------: |
+| [Installation](#-installation) | [Requirements](#-requirements) | [Usage](#-usage) | [📚 API](#-api) |
+| ------------------------------ | :----------------------------: | :--------------: | :-------------: |
 
 
 Asynchronous utility functions for [Firestore](https://firebase.google.com/docs/firestore/quickstart) within [Vue CLI 3](https://cli.vuejs.org/).
