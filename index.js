@@ -1,6 +1,4 @@
 import db from "./init.js";
-import firebase from "firebase/app";
-import firestore from "firebase/firestore";
 
 let leylo;
 export default (leylo = {
@@ -8,6 +6,22 @@ export default (leylo = {
   db: db,
 
   // RETRIEVING DATA
+  getPath: async function(path, getData = true) {
+    if (/\//.test(path)) {
+      path = path.split("/");
+      if (path.length > 1 && path.length < 3) {
+        return await this.getDocById(path[0], path[1], getData);
+      } else if (path.length == 3) {
+        let field = path[2];
+        let doc = await this.getDocById(path[0], path[1], getData);
+        return getData ? doc[field] : doc.data()[field];
+      } else {
+        return new Error(`Paths with ${path.length} depths not supported`);
+      }
+    } else {
+      return await this.getCollection(path);
+    }
+  },
   docExists: async function(collection, id) {
     return await db
       .collection(collection)
@@ -64,7 +78,7 @@ export default (leylo = {
         if (!snapshot.docs.length) return false;
         return Promise.all(
           snapshot.docs.map(doc => {
-            return getData ? Promise.resolve(doc.data()) : Promise.resolve(doc);
+            return Promise.resolve(getData ? doc.data() : doc);
           })
         );
       });
@@ -110,7 +124,7 @@ export default (leylo = {
         if (!snapshot.docs.length) return false;
         return Promise.all(
           snapshot.docs.map(doc => {
-            return getData ? Promise.resolve(doc.data()) : Promise.resolve(doc);
+            return Promise.resolve(getData ? doc.data() : doc);
           })
         );
       });
@@ -138,13 +152,13 @@ export default (leylo = {
               changeType = changeType ? changeType.toLowerCase() : null;
               if (!changeType || change.type == changeType) {
                 if (!callback)
-                  return getData
-                    ? Promise.resolve(change.doc.data())
-                    : Promise.resolve(change.doc);
+                  return Promise.resolve(
+                    getData ? change.doc.data() : change.doc
+                  );
                 else
-                  return getData
-                    ? Promise.resolve(callback(change.doc.data()))
-                    : Promise.resolve(callback(change.doc));
+                  return Promise.resolve(
+                    callback(getData ? change.doc.data() : change.doc)
+                  );
               } else {
                 if (!/^modified|added|removed$/.test(changeType))
                   return Promise.reject(
@@ -185,13 +199,13 @@ export default (leylo = {
               changeType = changeType ? changeType.toLowerCase() : null;
               if (!changeType || change.type == changeType) {
                 if (!callback)
-                  return getData
-                    ? Promise.resolve(change.doc.data())
-                    : Promise.resolve(change.doc);
+                  return Promise.resolve(
+                    getData ? change.doc.data() : change.doc
+                  );
                 else
-                  return getData
-                    ? Promise.resolve(callback(change.doc.data()))
-                    : Promise.resolve(callback(change.doc));
+                  return Promise.resolve(
+                    callback(getData ? change.doc.data() : change.doc)
+                  );
               } else {
                 if (!/^modified|added|removed$/.test(changeType))
                   return Promise.reject(
@@ -233,13 +247,13 @@ export default (leylo = {
               changeType = changeType ? changeType.toLowerCase() : null;
               if (!changeType || change.type == changeType) {
                 if (!callback)
-                  return getData
-                    ? Promise.resolve(change.doc.data())
-                    : Promise.resolve(change.doc);
+                  return Promise.resolve(
+                    getData ? change.doc.data() : change.doc
+                  );
                 else
-                  return getData
-                    ? Promise.resolve(callback(change.doc.data()))
-                    : Promise.resolve(callback(change.doc));
+                  return Promise.resolve(
+                    callback(getData ? change.doc.data() : change.doc)
+                  );
               } else {
                 if (!/^modified|added|removed$/.test(changeType))
                   return Promise.reject(
@@ -264,7 +278,7 @@ export default (leylo = {
         if (!snapshot.docs.length) return false;
         return Promise.all(
           snapshot.docs.map(doc => {
-            return getData ? Promise.resolve(doc.data()) : Promise.resolve(doc);
+            return Promise.resolve(getData ? doc.data() : doc);
           })
         );
       });
@@ -275,22 +289,29 @@ export default (leylo = {
     changeType = null,
     getData = true
   ) {
-    return await db.collection(collection).onSnapshot(
+    let stream = await db.collection(collection).onSnapshot(
       querySnapshot => {
-        if (querySnapshot.empty)
-          return Promise.reject(new Error(`${collection} does not exist`));
+        if (querySnapshot.empty) {
+          db.collection(collection)
+            .get()
+            .then(snapshot => {
+              if (!snapshot.docs.length) {
+                return stream();
+              }
+            });
+        }
         return Promise.all(
           querySnapshot.docChanges().map(change => {
             changeType = changeType ? changeType.toLowerCase() : null;
             if (!changeType || change.type == changeType) {
               if (!callback)
-                return getData
-                  ? Promise.resolve(change.doc.data())
-                  : Promise.resolve(change.doc);
+                return Promise.resolve(
+                  getData ? change.doc.data() : change.doc
+                );
               else
-                return getData
-                  ? Promise.resolve(callback(change.doc.data()))
-                  : Promise.resolve(callback(change.doc));
+                return Promise.resolve(
+                  callback(getData ? change.doc.data() : change.doc)
+                );
             } else {
               if (!/^modified|added|removed$/.test(changeType))
                 return Promise.reject(
@@ -306,6 +327,7 @@ export default (leylo = {
         return new Error(error);
       }
     );
+    return stream;
   },
 
   // DELETING
@@ -493,9 +515,15 @@ export default (leylo = {
     );
   },
   setFieldByPath: async function(path, value) {
+    if (!/\//.test(path))
+      return new Error(
+        `${path} must be in the form: collection/document/field`
+      );
     path = path.split("/");
     if (path.length !== 3)
-      return new Error(`${path} must be three tiers: col/doc/field`);
+      return new Error(
+        `${path} must be three tiers: collection/document/field`
+      );
     let newfield = path[2];
     return await db
       .collection(path[0])

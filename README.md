@@ -6,6 +6,8 @@
 
 Asynchronous utility functions for [Firestore](https://firebase.google.com/docs/firestore/quickstart) within [Vue CLI 3](https://cli.vuejs.org/).
 
+See [example site here](https://leylo-test.web.app/)
+
 ## ▸ Installation
 
 ```bash
@@ -140,7 +142,7 @@ console.log(validation); //  Returns true
 
 // OR THENABLE
 leylo.docExists("users", "Inventsable").then(response => {
-  console.log(response); // Returns true }
+  console.log(response); // Returns true
 });
 ```
 
