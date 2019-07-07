@@ -72,7 +72,7 @@ All methods are accessible as properties of `leylo`, as in `leylo.docExists(...)
 <span style="font-size: 1.25rem; font-weight: 500;">&nbsp;&nbsp;&nbsp;&nbsp;📘 [Adding Data](#--adding-data)<span><br>
 <span style="font-size: 1.25rem; font-weight: 500;">&nbsp;&nbsp;&nbsp;&nbsp;📕 [Deleting Data](#--deleting-data)<span><br>
 
-## [◤](#-api)&nbsp;&nbsp; 📗 Global
+## &nbsp;&nbsp;[◤](#-api)&nbsp;&nbsp; 📗 Global
 
 > [◤](#-api)&nbsp;&nbsp; Click these arrows to return to the top of the API
 
@@ -105,7 +105,7 @@ query
 
 <!-- <span style="float: right">[Back to API 2](#api)</span> -->
 
-## [◤](#-api)&nbsp;&nbsp; 📙 Retreiving Data
+## &nbsp;&nbsp;[◤](#-api)&nbsp;&nbsp; 📙 Retreiving Data
 
 - [leylo.docExists()](#-docexistscollection-id)
 - [leylo.collectionExists()](#-collectionexistscollection)
@@ -583,7 +583,7 @@ let userList = await leylo.streamDocChangesById(
 
 ---
 
-## [◤](#-api)&nbsp;&nbsp; 📘 Adding Data
+## &nbsp;&nbsp;[◤](#-api)&nbsp;&nbsp; 📘 Adding Data
 
 - [leylo.addDoc()](#-adddoccollection-data)
 - [leylo.addAllDocs()](#-addalldocscollection-docs)
@@ -821,7 +821,7 @@ console.log(setNewLocation);
 
 ---
 
-## [◤](#-api)&nbsp;&nbsp; 📕 Deleting Data
+## &nbsp;&nbsp;[◤](#-api)&nbsp;&nbsp; 📕 Deleting Data
 
 - [leylo.deletePath()](#-deletepathpath)
 - [leylo.deleteCollection()](#-deletecollectioncollection)
