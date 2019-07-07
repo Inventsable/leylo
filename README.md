@@ -583,6 +583,7 @@ let userList = await leylo.streamDocChangesById(
 
 - [leylo.addDoc()](#-adddoccollection-data)
 - [leylo.addAllDocs()](#-addalldocscollection-docs)
+- [leylo.setPath()](#-setpathpath-data-overwrite)
 - [leylo.setDocByPath()](#-setdocbypathpath-data-overwrite)
 - [leylo.setAllDocsByPath()](#-setalldocsbypathoverwrite-docs)
 - [leylo.setDocById()](#-setdocbyidcollection-id-data-overwrite)
@@ -615,7 +616,7 @@ console.log(user.data()); //  Returns { name: 'Random', location: 'Random' }
 
 ### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.addAllDocs(collection, ...docs)`
 
-<!-- Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified -->
+Returns `Array` of `DocumentReference`s of newly written documents to `collection`
 
 - `collection` **[String]** - Name of collection
 - `docs` **[Array]** - Array containing `Object`s to be written as documents (without ids)
@@ -630,9 +631,45 @@ console.log(docsCreatedWithGeneratedIds); // Returns [DocumentReference, Documen
 
 <br>
 
+### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.setPath(path, data[, overwrite?])`
+
+> Shorthand method for writing document or field, will parse `path` and redirect to either leylo.addDoc(), leylo.addDocById(), or leylo.setFieldByPath
+
+Returns `Boolean` of whether the document/field was successfully written or `Object` DocumentReference if path was only a collection
+
+- `path` **[String]** - Path in the form collection/document
+- `data` **[Any]** - Contents of document to write or append. If writing document, should be `Object`, but if field can be anything (except for `Array` within `Array` per Firestore limitation)
+- `overwrite` **[Boolean]** (_Default: false_) - If `false`, merge new `data` with pre-existing document or overwrite if it already exists, but if `true` replace document entirely with new `data`
+
+```js
+// Can be used to create new document or merge/add field into pre-existing document
+let setLocation = await leylo.setPath("users/Inventsable", {
+  location: "Colorado"
+});
+console.log(setLocation); //  Returns true
+
+// If location already existed, rewrite it's contents to the new value:
+let newUser = await leylo.setPath("users", {
+  name: "John Doe",
+  location: "Washington"
+});
+console.log(newUser); //  Returns DocumentReference{ ... }
+
+// Rewrite individual field:
+let rewriteUserData = await leylo.setPath(
+  "users/Inventsable/location",
+  "Arizona"
+);
+console.log(rewriteUserData); //  Returns true
+```
+
+<br>
+
 ### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.setDocByPath(path, data[, overwrite?])`
 
-Returns `Boolean` of whether the document was successfully written to Firestore collection
+> Unlike leylo.setPath(), this method will return an Error if path points to collection or field.
+
+Returns `Boolean` of whether the document was successfully written to collection
 
 - `path` **[String]** - Path in the form collection/document
 - `data` **[Object]** - Contents of document to write or append
@@ -699,7 +736,7 @@ console.log(writeUsers); // Returns [true, true, true]
 
 ### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.setDocById(collection, id, data[, overwrite?])`
 
-Returns `Boolean` of whether the document was successfully written to Firestore collection
+Returns `Boolean` of whether the document was successfully written to collection
 
 - `collection` **[String]** - Name of collection
 - `id` **[String]** - Name/ID of document within collection
@@ -795,11 +832,21 @@ console.log(setNewLocation);
 
 ### &nbsp;&nbsp;[▲](#--deleting-data)&nbsp;&nbsp; `.deletePath(path)`
 
+> NOTE: If deleting a collection which has a stream, the stream is automatically detached.
+
 Returns `Boolean` if path was successfully deleted
 
 - `path` **[String]** - Any valid path from `collection` to `collection/document/field`
 
 ```js
+let deleteCertainUser = await leylo.deletePath("users/Inventsable");
+
+if (deleteCertainUser) console.log("I was deleted!");
+
+// Delete entire collection:
+leylo.deletePath("users").then(result => {
+  console.log(result); // Returns true
+});
 ```
 
 <br>
@@ -813,6 +860,13 @@ Returns `Array` of `Booleans` for number of documents successfully deleted
 - `collection` **[String]** - Name of collection
 
 ```js
+// Delete entire collection:
+leylo.deleteCollection("users").then(result => {
+  console.log(result); // Returns true
+});
+
+let fullDeletion = await leylo.deleteCollection("users");
+console.log(fullDeletion); // Returns false because collection doesn't exist, was deleted above
 ```
 
 <br>
@@ -825,6 +879,8 @@ Returns `Boolean`
 - `id` **[String]** - Name/ID of document within collection
 
 ```js
+let deleteCertainUser = await leylo.deletePath("users", "Inventsable");
+console.log(deleteCertainUser); // Returns true
 ```
 
 <br>
@@ -838,6 +894,16 @@ Returns `Array` of `Booleans` for whether documents were successfully deleted
 - `value` **[Any]** - New value to write to specified `path`
 
 ```js
+let deleteAllArizonaResidents = await leylo.deleteAllDocsByField(
+  "users",
+  "location",
+  "Arizona"
+);
+console.log(deleteAllArizonaResidents); // Returns [ true, true, true ]
+
+deleteAllArizonaResidents.forEach(status => {
+  console.log(status); // Returns true
+});
 ```
 
 <br>
@@ -852,6 +918,17 @@ Returns `Array` of `Booleans` for whether docs were successfully deleted
 - `value` **[Any]** - New value to write to specified `path`
 
 ```js
+let deleteAllArizonaResidents = await leylo.deleteAllDocsByQuery(
+  "users",
+  "temperature",
+  ">=",
+  110
+);
+console.log(deleteAllArizonaResidents); // Returns [ true, true, true ]
+
+deleteAllArizonaResidents.forEach(status => {
+  console.log(status); // Returns true
+});
 ```
 
 <br>
@@ -865,6 +942,13 @@ Returns `Boolean` for whether field was successfully deleted from document
 - `field` **[String]** - Name of key within document
 
 ```js
+let deleteLocation = await leylo.deleteFieldByDocId(
+  "users",
+  "Inventsable",
+  "location"
+);
+
+console.log(deleteLocation); //  Returns true
 ```
 
 <br>
@@ -878,6 +962,18 @@ Returns `Array` of `Booleans` for whether fields were successfully deleted
 - `value` **[Any]** - New value to write to specified `path`
 
 ```js
+let deleteAllArizonaLocations = await leylo.deleteAllFieldsContainingValue(
+  "users",
+  "location",
+  "Arizona"
+);
+console.log(deleteAllArizonaResidents); // Returns [ true, true, true ]
+
+deleteAllArizonaResidents.forEach(status => {
+  console.log(status); // Returns true
+});
+
+// Unlike leylo.deleteAllDocsByQuery() or like, this only deletes the field 'location' instead of entire doc.
 ```
 
 <br>
@@ -892,6 +988,26 @@ Returns `Array` of `Booleans` for whether fields were successfully deleted
 - `value` **[Any]** - New value to write to specified `path`
 
 ```js
-```
+let deleteAllArizonaLocations = await leylo.deleteAllFieldsContainingValue(
+  "users",
+  "location",
+  "==",
+  "Arizona"
+);
+console.log(deleteAllArizonaLocations); // Returns [ true, true, true ]
 
-<br>
+deleteAllArizonaLocations.forEach(status => {
+  console.log(status); //  Returns true
+});
+
+let deleteAllAlaskaLocations = await leylo.deleteAllFieldsContainingValue(
+  "users",
+  "temperature",
+  "<=",
+  10
+);
+console.log(deleteAllAlaskaLocations); // Returns [ true, true, true ]
+deleteAllAlaskaLocations.forEach(status => {
+  console.log(status); //  Returns true
+});
+```
