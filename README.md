@@ -1,4 +1,6 @@
-# leylo [![NPM](https://nodei.co/npm/leylo.png)](https://nodei.co/npm/leylo/)
+# leylo
+
+[![NPM](https://nodei.co/npm/leylo.png)](https://nodei.co/npm/leylo/)
 
 | [Installation](#-installation) | [Requirements](#-requirements) | [Usage](#-usage) | [Demo](https://github.com/Inventsable/leylo-test) | [📚 API](#-api) |
 | ------------------------------ | :----------------------------: | :--------------: | :-----------------------------------------------: | :-------------: |
