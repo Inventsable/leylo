@@ -541,6 +541,30 @@ export default (leylo = {
   },
 
   // ADDING
+  setPath: async function(path, data, overwrite = false) {
+    if (Array.isArray(data))
+      return Promise.resolve(
+        new Error(
+          `Data parameter should not be an array. Use an iterable method like leylo.setAllDocsByPath() instead.`
+        )
+      );
+    if (/\//.test(path)) {
+      path = path.split("/");
+      if (path.length < 3) {
+        return await this.setDocById(path[0], path[1], data, overwrite);
+      } else if (path.length == 3) {
+        return await this.setFieldByPath(path.join("/"), data, overwrite);
+      } else {
+        return Promise.resolve(
+          new Error(
+            `${path} should only be 2 - 3 tiers, as in col/doc or col/doc/field.`
+          )
+        );
+      }
+    } else {
+      return await this.addDoc(path, data, overwrite);
+    }
+  },
   setDocByPath: async function(path, data, overwrite = false) {
     return overwrite
       ? await db
