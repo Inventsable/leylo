@@ -662,7 +662,7 @@ let setLocation = await leylo.setPath("users/Inventsable", {
 });
 console.log(setLocation); //  Returns true
 
-// If location already existed, rewrite it's contents to the new value:
+// If path is only collection, adds new document and returns new document reference. This cannot be used to modify any pre-existing document.
 let newUser = await leylo.setPath("users", {
   name: "John Doe",
   location: "Washington"
