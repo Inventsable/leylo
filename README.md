@@ -453,7 +453,7 @@ methods: {
 
 ### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.streamPath(path[, callback, changeType, getData?])`
 
-Returns `Object` which can be programmatically detached, but still executes `callback` on any document.
+Returns `Object` which can be programmatically detached, but still executes `callback` on any document/data.
 
 - `path` **[String]** - Any valid path from `collection` to `collection/document`
 - `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
@@ -465,6 +465,7 @@ Returns `Object` which can be programmatically detached, but still executes `cal
 async mounted() {
   // Starts the stream
   this.startStream();
+  // The method below results in a `Hello NAME` statement for any user added until the stream is detached.
 
   setTimeout(() => {
     // Stops streaming after 10 seconds.
@@ -509,7 +510,7 @@ let messages = await leylo.streamDocChangesById(
   "messages",
   "chatroomA",
   newdata => {
-    // Executes every time a field is added or modified to this document
+    // Executes every time a field is added, modified, or removed from this document
     console.log("Document has changed to:");
     console.log(newdata);
   }
@@ -526,6 +527,7 @@ let userList = await leylo.streamDocChangesById(
 // Passing the data from above stream into one of our component's methods:
 methods: {
   addUser(doc) {
+    console.log(`New user was added at ${doc.ref.path} with contents:`)
     console.log(doc.data())
   }
 }
@@ -536,7 +538,7 @@ methods: {
 
 ### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.streamDocChangesByField(collection, field, value[, callback, changeType, getData?])`
 
-Returns **every matching** result of passing document `Object` as parameter to `callback` every time the document is modified.
+Returns result of passing document `Object` as parameter to `callback` every time a document's field is modified
 
 - `collection` **[String]** - Name of collection
 - `field` **[String]** - Name of key/field of target document
@@ -546,11 +548,13 @@ Returns **every matching** result of passing document `Object` as parameter to `
 - `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
 
 ```js
-let userList = await leylo.streamDocChangesById(
+let usersCurrentlyInArizona = await leylo.streamDocChangesByField(
   "users",
-  "chatroomA",
-  this.addUser,
-  "added",
+  "location",
+  "Arizona"(doc => {
+    console.log(`${doc.ref.path} is now in Arizona`);
+  }),
+  "modified",
   false
 );
 ```
@@ -570,11 +574,15 @@ Returns **every matching** result of passing document `Object` as parameter to `
 - `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
 
 ```js
-let userList = await leylo.streamDocChangesById(
+let usersLeavingArizona = await leylo.streamDocChangesByField(
   "users",
-  "chatroomA",
-  this.addUser,
-  "added",
+  "temperature",
+  "<=",
+  110,
+  doc => {
+    console.log(`${doc.ref.path} has left Arizona`);
+  },
+  "modified",
   false
 );
 ```
@@ -637,7 +645,7 @@ console.log(docsCreatedWithGeneratedIds); // Returns [DocumentReference, Documen
 
 ### &nbsp;&nbsp;[▲](#--adding-data)&nbsp;&nbsp; `.setPath(path, data[, overwrite?])`
 
-> Shorthand method for writing document or field, will parse `path` and redirect to either leylo.addDoc(), leylo.addDocById(), or leylo.setFieldByPath
+> Shorthand method for writing document or field, will parse `path` and redirect to either leylo.addDoc(), leylo.addDocById(), or leylo.setFieldByPath()
 
 Returns `Boolean` of whether the document/field was successfully written or `Object` DocumentReference if path was only a collection
 
