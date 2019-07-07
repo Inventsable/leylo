@@ -119,7 +119,7 @@ query
 - [leylo.getDocIdByField()](#-getdocidbyfieldcollection-field-value)
 - [leylo.getDocPathByField()](#-getdocPathbyfieldcollection-field-value)
 - [leylo.streamCollection()](#-streamcollectioncollection-callback-changetype-getdata)
-- leylo.streamPath
+- [leylo.streamPath()](#-streampathpath-callback-changetype-getdata)
 - [leylo.streamDocChangesById()](#-streamdocchangesbyidcollection-id-callback-getdata)
 - [leylo.streamDocChangesByField()](#-streamdocchangesbyfieldcollection-field-value-callback-changetype-getdata)
 - [leylo.streamDocChangesByQuery()](#-streamdocchangesbyquerycollection-field-query-value-callback-changetype-getdata)
