@@ -32,9 +32,9 @@ VUE_APP_FIREBASE_MESSAGINGSENDERID=...
 VUE_APP_FIREBASE_APPID=...
 ```
 
-![](./assets/anno.png)
+No quotation marks needed in `.env` values above
 
-No quotation marks needed in `.env` the above
+![](./assets/anno.png)
 
 ---
 
