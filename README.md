@@ -782,18 +782,18 @@ console.log(setNewLocation);
 
 ## [◤](#-api)&nbsp;&nbsp; 📕 Deleting Data
 
-- leylo.deletePath()
-- [leylo.deleteCollection()](#-)
-- [leylo.deleteDocById()](#-)
-- [leylo.deleteAllDocsByField()](#-)
-- [leylo.deleteAllDocsByQuery()](#-)
-- [leylo.deleteFieldByDocId()](#-)
-- [leylo.deleteAllFieldsContainingValue()](#-)
-- [leylo.deleteAllFieldsByQuery()](#-)
+- [leylo.deletePath()](#-deletepathpath)
+- [leylo.deleteCollection()](#-deletecollectioncollection)
+- [leylo.deleteDocById()](#-deletedocbyidcollection-id)
+- [leylo.deleteAllDocsByField()](#-deletealldocsbyfieldcollection-field-value)
+- [leylo.deleteAllDocsByQuery()](#-deletealldocsbyquerycollection-field-query-value)
+- [leylo.deleteFieldByDocId()](#-deletefieldbydocidcollection-id-field)
+- [leylo.deleteAllFieldsContainingValue()](#-deleteallfieldscontainingvaluecollection-field-value)
+- [leylo.deleteAllFieldsByQuery()](#-deleteallfieldsbyquerycollection-field-query-value)
 
 ---
 
-### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deletePath(path)`
+### &nbsp;&nbsp;[▲](#--deleting-data)&nbsp;&nbsp; `.deletePath(path)`
 
 Returns `Boolean` if path was successfully deleted
 
@@ -804,7 +804,7 @@ Returns `Boolean` if path was successfully deleted
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteCollection(collection)`
+### &nbsp;&nbsp;[▲](#--deleting-data)&nbsp;&nbsp; `.deleteCollection(collection)`
 
 > Same as using `await leylo.deletePath(collection)`
 
@@ -817,7 +817,7 @@ Returns `Array` of `Booleans` for number of documents successfully deleted
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteDocById(collection, id)`
+### &nbsp;&nbsp;[▲](#--deleting-data)&nbsp;&nbsp; `.deleteDocById(collection, id)`
 
 Returns `Boolean`
 
@@ -829,7 +829,7 @@ Returns `Boolean`
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllDocsByField(collection, field, value)`
+### &nbsp;&nbsp;[▲](#--deleting-data)&nbsp;&nbsp; `.deleteAllDocsByField(collection, field, value)`
 
 Returns `Array` of `Booleans` for whether documents were successfully deleted
 
@@ -842,7 +842,7 @@ Returns `Array` of `Booleans` for whether documents were successfully deleted
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllDocsByQuery(collection, field, query, value)`
+### &nbsp;&nbsp;[▲](#--deleting-data)&nbsp;&nbsp; `.deleteAllDocsByQuery(collection, field, query, value)`
 
 Returns `Array` of `Booleans` for whether docs were successfully deleted
 
@@ -856,7 +856,7 @@ Returns `Array` of `Booleans` for whether docs were successfully deleted
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteFieldByDocId(collection, id, field)`
+### &nbsp;&nbsp;[▲](#--deleting-data)&nbsp;&nbsp; `.deleteFieldByDocId(collection, id, field)`
 
 Returns `Boolean` for whether field was successfully deleted from document
 
@@ -869,7 +869,7 @@ Returns `Boolean` for whether field was successfully deleted from document
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllFieldsContainingValue(collection, field, value)`
+### &nbsp;&nbsp;[▲](#--deleting-data)&nbsp;&nbsp; `.deleteAllFieldsContainingValue(collection, field, value)`
 
 Returns `Array` of `Booleans` for whether fields were successfully deleted
 
@@ -882,7 +882,7 @@ Returns `Array` of `Booleans` for whether fields were successfully deleted
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--removing-data)&nbsp;&nbsp; `.deleteAllFieldsByQuery(collection, field, query, value)`
+### &nbsp;&nbsp;[▲](#--deleting-data)&nbsp;&nbsp; `.deleteAllFieldsByQuery(collection, field, query, value)`
 
 Returns `Array` of `Booleans` for whether fields were successfully deleted
 
