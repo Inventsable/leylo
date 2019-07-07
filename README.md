@@ -163,9 +163,9 @@ console.log(validation); //  Returns true
 
 ### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getPath(path[, getData?])`
 
-Returns `Array` or `Object` of specified `path` in Firestore or `False` if not found
+Returns `Array` if collection, `Object` if document, or `Any` if field of specified `path` or `False` if not found
 
-- `path` **[String]** - Path in the form colleciton or collection/document
+- `path` **[String]** - Path in the form collection or collection/document
 - `getData` **[Boolean]** (_Default: true_) - If `true` returns `documentSnapshot.data()` else returns `documentSnapshot`
 
 ```js
@@ -176,6 +176,10 @@ console.log(userList); // Returns [{…}, {…}, {…}, {…}, {…}]
 // Simple grab single document from specific collection/document path:
 let certainUser = await leylo.getPath("users/Inventsable");
 console.log(userList); // Returns { name: 'Tom Scharstein', ... }
+
+// Simple grab value from specific collection/document/field path:
+let certainUserLocation = await leylo.getPath("users/Inventsable/location");
+console.log(certainUserLocation); // Returns 'Arizona'
 
 // Add all documents to a specified array in component's data
 let doSomethingEveryUser = await leylo.getPath("users", false);
