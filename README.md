@@ -1,4 +1,4 @@
-# leylo [![npm version](https://badge.fury.io/js/leylo.svg)](https://badge.fury.io/js/leylo)
+# leylo [![npm version](https://badge.fury.io/js/leylo.svg)](https://badge.fury.io/js/leylo) [![npm](https://img.shields.io/npm/dm/leylo.svg)]()
 
 [![NPM](https://nodei.co/npm/leylo.png)](https://nodei.co/npm/leylo/)
 
