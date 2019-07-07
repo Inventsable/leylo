@@ -49,7 +49,7 @@ export default (leylo = {
         return getData ? snapshot.docs[0].data() : snapshot.docs[0];
       });
   },
-  getDocRefByField: async function(collection, field, value) {
+  getDocPathByField: async function(collection, field, value) {
     return await db
       .collection(collection)
       .where(field, "==", value)
@@ -283,6 +283,91 @@ export default (leylo = {
         );
       });
   },
+  streamPath: async function(path, callback, changeType, getData = true) {
+    let collection, doc, stream, catcher;
+    if (/\//.test(path)) {
+      path = path.split("/");
+      collection = path[0];
+      doc = path[1];
+    }
+    if (!doc) {
+      stream = await db.collection(path).onSnapshot(querySnapshot => {
+        if (querySnapshot.empty) {
+          db.collection(collection)
+            .get()
+            .then(snapshot => {
+              if (!snapshot.docs.length) {
+                return stream();
+              }
+            });
+        } else {
+          catcher = Promise.all(
+            querySnapshot.docChanges().map(change => {
+              changeType = changeType ? changeType.toLowerCase() : null;
+              if (!changeType || change.type == changeType) {
+                if (!callback)
+                  return Promise.resolve(
+                    getData ? change.doc.data() : change.doc
+                  );
+                else
+                  return Promise.resolve(
+                    callback(getData ? change.doc.data() : change.doc)
+                  );
+              } else {
+                if (!/^modified|added|removed$/.test(changeType))
+                  return Promise.reject(
+                    new Error(
+                      `'${changeType}' is not a supported change type. Must be one of 'modified', 'added', or 'removed'.`
+                    )
+                  );
+              }
+            })
+          ).then(results => {
+            Promise.resolve([results, stream]);
+          });
+        }
+      });
+    } else {
+      stream = await db.collection(collection).onSnapshot(querySnapshot => {
+        if (querySnapshot.empty) {
+          db.collection(collection)
+            .doc(doc)
+            .get()
+            .then(snapshot => {
+              if (!snapshot.docs.length) {
+                return stream();
+              }
+            });
+        } else {
+          catcher = Promise.all(
+            querySnapshot.docChanges().map(change => {
+              changeType = changeType ? changeType.toLowerCase() : null;
+              if (!changeType || change.type == changeType) {
+                if (!callback)
+                  return Promise.resolve(
+                    getData ? change.doc.data() : change.doc
+                  );
+                else
+                  return Promise.resolve(
+                    callback(getData ? change.doc.data() : change.doc)
+                  );
+              } else {
+                if (!/^modified|added|removed$/.test(changeType))
+                  return Promise.reject(
+                    new Error(
+                      `'${changeType}' is not a supported change type. Must be one of 'modified', 'added', or 'removed'.`
+                    )
+                  );
+              }
+            })
+          ).then(results => {
+            Promise.resolve([results, stream]);
+          });
+        }
+      });
+    }
+    return stream;
+  },
   streamCollection: async function(
     collection,
     callback = null,
@@ -378,7 +463,7 @@ export default (leylo = {
         );
       });
   },
-  deleteAllDocsByQuery: async function(collection, query, field, value) {
+  deleteAllDocsByQuery: async function(collection, field, query, value) {
     return await db
       .collection(collection)
       .where(field, query, value)

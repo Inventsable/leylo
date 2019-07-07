@@ -109,7 +109,7 @@ query
 
 - [leylo.docExists()](#-docexistscollection-id)
 - [leylo.collectionExists()](#-collectionexistscollection)
-- [leylo.getPath](#-getpathpath-getdata)
+- [leylo.getPath()](#-getpathpath-getdata)
 - [leylo.getCollection()](#-getcollectioncollection-getdata)
 - [leylo.getDocById()](#-getdocbyidcollection-id-getdata)
 - [leylo.getDocByField()](#-getdocbyfieldcollection-field-value-getdata)
@@ -117,7 +117,7 @@ query
 - [leylo.getAllDocsByField()](#-getalldocsbyfieldcollection-field-value-getdata)
 - [leylo.getAllDocsByQuery()](#-getalldocsbyquerycollection-field-query-value-getdata)
 - [leylo.getDocIdByField()](#-getdocidbyfieldcollection-field-value)
-- [leylo.getDocRefByField()](#-getdocrefbyfieldcollection-field-value)
+- [leylo.getDocPathByField()](#-getdocPathbyfieldcollection-field-value)
 - [leylo.streamCollection()](#-streamcollectioncollection-callback-changetype-getdata)
 - leylo.streamPath
 - [leylo.streamDocChangesById()](#-streamdocchangesbyidcollection-id-callback-getdata)
@@ -170,38 +170,54 @@ Returns `Array` or `Object` of specified `path` in Firestore or `False` if not f
 
 ```js
 // Simple grab all documents within a collection:
-let userList = await leylo.path("users");
+let userList = await leylo.getPath("users");
 console.log(userList); // Returns [{…}, {…}, {…}, {…}, {…}]
 
-let certainUser = await leylo.path("users/Inventsable");
+// Simple grab single document from specific collection/document path:
+let certainUser = await leylo.getPath("users/Inventsable");
 console.log(userList); // Returns { name: 'Tom Scharstein', ... }
+
+// Add all documents to a specified array in component's data
+let doSomethingEveryUser = await leylo.getPath("users", false);
+
+doSomethingEveryUser.forEach(user => {
+  this.userList.push(user.data());
+});
+
+// When adding to pre-existing array, add items which don't already exist in that array:
+let addUsersAgain = await leylo.getPath("users");
+addUsersAgain.forEach(user => {
+  // Add item to array if array doesn't contain this same key = value pair
+  // This is similar to Array.includes() and returns Boolean but by targeting Prop of Object within Array
+  if (!this.userList.some(person => person.fullName == user.fullName))
+    this.userList.push(user);
+  else console.log(`${user.fullName} already existed in this.userList`);
+});
 ```
 
 <br>
 
 ### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getCollection(collection[, getData?])`
 
-Returns `Object` with specified `id` in Firestore or `False` if not found
+Returns `Array` of `Object`s within specified collection or `False` if not found
 
 - `collection` **[String]** - Name of collection
 - `getData` **[Boolean]** (_Default: true_) - If `true` returns `documentSnapshot.data()` else returns `documentSnapshot`
 
 ```js
 // Simple grab all documents within a collection:
-let userList = await leylo.getCollection("userList");
+let userList = await leylo.getCollection("users");
 console.log(userList); // Returns [{…}, {…}, {…}, {…}, {…}]
 
 // If needing to grab the Document Reference, we can pass false to getData:
-let doSomethingEveryUser = leylo
-  .getCollection("userList", false)
-  .then(users => {
-    users.forEach(user => {
-      console.log(`${user.id} is at ${user.ref.path} and contains:`); // Inventsable is at userList/Inventsable and contains
-      console.log(user.data()); // Returns Object with document contents { ... }
-    });
+let doSomethingEveryUser = leylo.getCollection("users", false).then(users => {
+  users.forEach(user => {
+    console.log(`${user.id} is at ${user.ref.path} and contains:`); // Inventsable is at userList/Inventsable and contains
+    console.log(user.data()); // Returns Object with document contents { ... }
   });
+});
 
-let doSomethingAsyncForList = await leylo.getCollection("userList", false);
+let doSomethingAsyncForList = await leylo.getCollection("users", false);
 console.log("This prints at the top");
 Promise.all(
   doSomethingAsyncEveryUser.map(user => {
@@ -248,7 +264,7 @@ console.log(user); //  Returns { name: 'Tom Scharstein', ... }
 
 ### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getAllDocsByField(collection, field, value[, getData?])`
 
-Returns `Array` of every `Object` with specified `field` = `value` in Firestore or `False` if none found
+Returns `Array` of every `Object` with specified `field` = `value` in collection or `False` if none found
 
 - `collection` **[String]** - Name of collection
 - `field` **[String]** - Name of key/field of target document
@@ -261,9 +277,9 @@ let usersInArizona = await leylo.getAllDocsByField(
   "location",
   "Arizona"
 );
-// Returns [ ... ]
+// Returns [ {...}, {...}, {...} ]
 usersInArizona.forEach(user => {
-  console.log(user); //  Returns { name: 'Tom Scharstein', ... }
+  console.log(user); //  Returns { name: 'Tom', location: 'Arizona', ... }
 });
 ```
 
@@ -273,20 +289,26 @@ usersInArizona.forEach(user => {
 
 > Same as using `await leylo.getDocByField("users", "name", "Tom Scharstein", false).id`
 
-Returns `String` of specified `field` = `value` document's `id` in Firestore or `False` if not found
+Returns `String` of specified `field` = `value` document's `id` in collection or `False` if not found
 
 - `collection` **[String]** - Name of collection
 - `field` **[String]** - Name of key/field of target document
 - `value` **[String]** - Value of key/field of target document
 
 ```js
-let user = await leylo.getDocIdByField("users", "name", "Tom Scharstein");
-console.log(user); //  Returns 'Inventsable'
+// If we don't know the path to our document, but know a certain key/value pair only it has:
+let userId = await leylo.getDocIdByField("users", "name", "Tom Scharstein");
+console.log(userId); //  Returns 'Inventsable'
+
+// We can query it to return the Document.id, and know the path must be users/Inventsable
+
+let checkPath = await leylo.getPath("users/Inventsable");
+console.log(checkPath); //  Returns { name: 'Tom Scharstein', location: 'Arizona', ... }
 ```
 
 <br>
 
-### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getDocRefByField(collection, field, value)`
+### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.getDocPathByField(collection, field, value)`
 
 > Same as using `await leylo.getDocByField("users", "name", "Tom Scharstein", false).ref.path`
 
@@ -297,8 +319,12 @@ Returns `String` with specified `field` = `value` document's path in Firestore o
 - `value` **[String]** - Value of key/field of target document
 
 ```js
-let user = await leylo.getDocRefByField("users", "name", "Tom Scharstein");
-console.log(user); //  Returns 'users/Inventsable'
+let fullPathToUser = await leylo.getDocPathByField(
+  "users",
+  "name",
+  "Tom Scharstein"
+);
+console.log(fullPathToUser); //  Returns 'users/Inventsable'
 ```
 
 <br>
@@ -314,16 +340,21 @@ Returns first `Object` found with specified `field` `(query)` `value` in Firesto
 - `getData` **[Boolean]** (_Default: true_) - If `true` returns `documentSnapshot.data()` else returns `documentSnapshot`
 
 ```js
-let placeTooHotToLiveIn = await leylo.getDocByQuery(
-  "states",
+// Grab the first user containing key of temperature less than or equal to 10
+let userInAlaska = await leylo.getDocByQuery("users", "temperature", "<=", 10);
+
+console.log(userInAlaska); // Returns { name: 'John Doe' }
+
+// Grab the first user where temperature is greator or equal to 10 as DocumentReference
+let userNotInAlaska = await leylo.getDocByQuery(
+  "users",
   "temperature",
-  ">="
-  "110",
-  false
+  ">=",
+  10,
+  false // Passing false to getData gives us the DocumentReference
 );
-placeTooHotToLiveIn.forEach(place => {
-  console.log(place);  //  Returns DocumentSnapshot{ ... }
-});
+
+console.log(userNotInAlaska.ref.path); // Returns 'users/Inventsable'
 ```
 
 <br>
@@ -339,15 +370,18 @@ Returns `Array` of every `Object` with specified `field` `(query)` `value` in Fi
 - `getData` **[Boolean]** (_Default: true_) - If `true` returns `documentSnapshot.data()` else returns `documentSnapshot`
 
 ```js
-let usersInArizona = await leylo.getAllDocsByQuery(
-  "users",
-  "location",
-  "==",
-  "Arizona"
+// Get Array of all documents where temperature field contains value greater or equal to 110
+let placeTooHotToLiveIn = await leylo.getAllDocsByQuery(
+  "states",
+  "temperature",
+  ">="
+  110,
+  false
 );
-// Returns [ ... ]
-usersInArizona.forEach(user => {
-  console.log(user); //  Returns { name: 'Tom Scharstein', ... }
+console.log(placesTooHotToLiveIn) //  Returns [ {...}, {...}, {...} ]
+
+placeTooHotToLiveIn.forEach(place => {
+  console.log(place);  //  Returns DocumentSnapshot{ ... }
 });
 ```
 
@@ -355,7 +389,9 @@ usersInArizona.forEach(user => {
 
 ### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.streamCollection(collection[, callback, changeType, getData?])`
 
-Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified
+> Cannot be detached -- if needing programmatic detachment use .streamPath() instead
+
+Returns **every matching** result of passing document `Object` as parameter to `callback` every time the collection is modified. Initial results are same as `this.getCollection()` but reactive and continuous to catch any docs added to this collection later and execute callback on them as well.
 
 - `collection` **[String]** - Name of collection
 - `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
@@ -413,7 +449,7 @@ methods: {
 
 ### &nbsp;&nbsp;[▲](#--retreiving-data)&nbsp;&nbsp; `.streamPath(path[, callback, changeType, getData?])`
 
-Returns `Object` which can be programmatically detached.
+Returns `Object` which can be programmatically detached, but still executes `callback` on any document.
 
 - `path` **[String]** - Any valid path from `collection` to `collection/document`
 - `callback` **[Function]** (_Default: null_) - Function to execute on every change to document. If `null`, returns direct `Object` according to `getData` parameter
@@ -421,6 +457,33 @@ Returns `Object` which can be programmatically detached.
 - `getData` **[Boolean]** (_Default: true_) - If `true` passes `querySnapshot.docChanges().data()` to `callback` else passes `querySnapshot.docChanges()`
 
 ```js
+
+async mounted() {
+  // Starts the stream
+  this.startStream();
+
+  setTimeout(() => {
+    // Stops streaming after 10 seconds.
+    this.stopStream()
+  }, 10000)
+},
+methods: {
+  async startStream() {
+    this.userStream = await leylo.streamPath(
+      "users",
+      user => {
+        this.greetingList.push(`Hello ${user.data().firstName}`);
+      },
+      "added",
+      false
+    );
+  },
+  async stopStream() {
+    // Firestore's detachment is odd. You have to call the stream as a function:
+    this.userStream();
+  }
+}
+
 ```
 
 <br>
